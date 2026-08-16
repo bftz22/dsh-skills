@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><title>浏览器测试页</title></head>
+<body>
+<h1>浏览器自动化测试页</h1>
+<input id="kw" name="wd" placeholder="输入关键词" />
+<button id="btn" type="button">搜索</button>
+<div id="result">（尚未输入）</div>
+<script>
+  document.getElementById('btn').addEventListener('click', function () {
+    var v = document.getElementById('kw').value;
+    document.getElementById('result').textContent = '你输入了: ' + v;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# 测试产物与本地文件
+screenshots/
+*.png
+ocr-result.txt
+node_modules/
