@@ -68,5 +68,7 @@ for i in range(len(scores)):
 '@
 $tmpPy = Join-Path $env:TEMP ("vision-face-" + [guid]::NewGuid().ToString('N') + ".py")
 [System.IO.File]::WriteAllText($tmpPy, $py, (New-Object System.Text.UTF8Encoding($false)))
+# 强制 UTF-8 输出（防止 cp1252/GBK 区域 print 中文崩溃）
+$env:PYTHONIOENCODING = 'utf-8'
 & $pyExe $tmpPy (Resolve-Path $Image).Path $onnxPath
 if (Test-Path $tmpPy) { Remove-Item $tmpPy -Force }

@@ -54,5 +54,7 @@ print(answer.strip())
 '@
 $tmpPy = Join-Path $env:TEMP ("vision-ask-" + [guid]::NewGuid().ToString('N') + ".py")
 [System.IO.File]::WriteAllText($tmpPy, $py, (New-Object System.Text.UTF8Encoding($false)))
+# 强制 UTF-8 输出（防止 cp1252/GBK 区域 print 中文崩溃）
+$env:PYTHONIOENCODING = 'utf-8'
 & $venvPy $tmpPy (Resolve-Path $Image).Path $Question $modelPath
 if (Test-Path $tmpPy) { Remove-Item $tmpPy -Force }

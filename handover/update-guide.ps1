@@ -1,9 +1,9 @@
-﻿# update-guide.ps1 — 刷新 AI 交接指南的状态快照段 + 生成带时间戳快照文件
+# update-guide.ps1 — 刷新 AI 交接指南的状态快照段 + 生成带时间戳快照文件
 # 用法：powershell -File update-guide.ps1
 # 兼容 PS 5.1 / 7；只读写交接指南目录（HANDOVER_DIR 优先），无任何危险操作
 $ErrorActionPreference = 'Continue'
 
-# 自动探测指南目录（HANDOVER_DIR 优先，D:/C 兜底；优先新版子文件夹结构，兼容旧版平铺）
+# 自动探测指南目录（HANDOVER_DIR 优先，D:/C 兜底；都没有则自动创建 %USERPROFILE%\AI交接指南）
 function Find-HandoverBase {
   foreach ($b in @($env:HANDOVER_DIR, 'D:\AI交接指南', 'C:\AI交接指南')) {
     if ($b -and (Test-Path $b)) { return $b }
@@ -12,13 +12,30 @@ function Find-HandoverBase {
 }
 $base = Find-HandoverBase
 if (-not $base) {
-  Write-Output 'ERR: 未找到交接指南目录（请设置环境变量 HANDOVER_DIR）'
-  exit 1
+  $base = Join-Path $HOME 'AI交接指南'
+  Write-Output "INFO: 未找到交接指南目录，自动创建：$base"
+  foreach ($d in @('00_主指南', '01_交接日志', '02_简报', '03_状态快照', '04_报告', '06_贤臣档案')) {
+    $p = Join-Path $base $d
+    if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p -Force | Out-Null }
+  }
 }
 $guide = Get-ChildItem $base -Recurse -Filter 'AI交接指南-*.md' -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 if (-not $guide) {
-  Write-Output "ERR: 未找到主指南文件（$base）"
-  exit 1
+  # 主指南不存在：创建最小占位主指南（含快照标记段，保证后续写入正常）
+  $guideFile = Join-Path $base '00_主指南\AI交接指南-' + (Get-Date -Format 'yyyy-MM-dd') + '.md'
+  $placeholder = @"
+# AI 交接指南（自动初始化）
+
+> 由 update-guide.ps1 自动创建（$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')）
+
+## 状态快照
+
+<!-- SNAPSHOT:START -->
+<!-- SNAPSHOT:END -->
+"@
+  [System.IO.File]::WriteAllText($guideFile, $placeholder, (New-Object System.Text.UTF8Encoding($false)))
+  Write-Output "INFO: 已创建主指南占位文件：$guideFile"
+  $guide = Get-Item $guideFile
 }
 $guide = $guide.FullName
 if (Test-Path (Join-Path $base '03_状态快照')) {
