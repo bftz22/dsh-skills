@@ -1,0 +1,64 @@
+# QQ 渠道 Skill（qq-bridge 技能包）
+
+> 用途：给 AI「QQ 出口」——通过本机 NapCat（小号挂机）向白名单 QQ 号发送私聊消息、查询在线状态与好友列表、**接收白名单 QQ 发来的图片**
+> 目录：`<dsh>\skills\qq\`（dsh = DeepSeek Harness 工作区）
+> 创建：2026-08-17（配合 NapCat + qq-bridge 部署，Chatbox 渠道 → QQ 渠道）
+> 依赖：NapCat 运行中（端口 3000）、凭据在 `.env`（NAPCAT_API / NAPCAT_TOKEN）
+
+## 脚本一览
+
+| 脚本 | 能力 | 用法 |
+|---|---|---|
+| `qq-send.ps1` | 给指定 QQ 号发私聊消息 | `-UserId 10001 -Message "你好"` |
+| `qq-info.ps1` | 查询贤臣登录状态 / 好友列表 | `-Friends`（列好友） |
+
+## 调用示例
+
+```powershell
+# 给主公发一条 QQ 消息
+powershell -File qq-send.ps1 -UserId 10001 -Message "AI 捎话：任务已完成"
+
+# 查询贤臣在线状态（账号/昵称）
+powershell -File qq-info.ps1
+
+# 列出贤臣好友
+powershell -File qq-info.ps1 -Friends
+```
+
+## 收图（2026-08-17 新增，qq-bridge.mjs 内置）
+
+- **机制**：白名单大号给 NapCat 小号发图片 → NapCat 上报 → qq-bridge 自动下载保存到
+  `%USERPROFILE%\Downloads\QQ收图\`，文件名 `QQ-<YYYYMMDDHHmmss>-<QQ号>.<ext>`；元信息写 `latest.json`
+  （时间/发送者/文件名/路径），每次收图覆盖
+- **带斜杠指令的图片**：先收图，再照常执行指令（如 `/贤臣 看看这张图`）
+- **AI 侧查看流程**（用户在 Chatbox 说「看QQ收的图」时）：
+  1. 读 `%USERPROFILE%\Downloads\QQ收图\latest.json` 拿最新图片路径（没有则列出目录最新 5 张让用户选）
+  2. 用 `skills\vision\` 技能识别图片内容（OCR / 本地 VLM / 云端 API），按需汇报
+- **排障**：收图失败先看 qq-bridge 窗口日志（`复制图片缓存失败`/`下载图片失败 HTTP xxx`）；
+  `get_image` 拿本地缓存失败会自动回退到直连下载 url
+
+## 可发消息的 QQ（白名单，需在 NapCat 好友列表）
+
+| QQ | 说明 |
+|---|---|
+| `YOUR_MASTER_QQ_1` | 白名单大号（发消息 / 收图） |
+| `YOUR_MASTER_QQ_2` | 白名单大号（可选第二个） |
+
+> 发消息前确认目标号在 NapCat 好友列表（`qq-info.ps1 -Friends`），非好友私聊会失败。
+> 白名单在 `qq-bridge.bat` 的 `QQ_MASTER` 环境变量配置（逗号分隔）。
+
+## 依赖与环境
+
+| 项目 | 位置 |
+|---|---|
+| NapCat HTTP API | `http://127.0.0.1:3000`（.env 的 `NAPCAT_API`） |
+| 访问 token | .env 的 `NAPCAT_TOKEN`（与 qq-bridge.bat 一致） |
+| 桥接脚本 | `<bridge_dir>\qq-bridge.mjs`（8788 收上报，白名单大号） |
+| 收图目录 | `%USERPROFILE%\Downloads\QQ收图\`（latest.json 记录最新一张） |
+
+## 注意事项
+
+1. **前置检查**：调用前先 `qq-info.ps1` 确认贤臣在线（NapCat 3000 端口通）；NapCat 重启后 QQ 需重新扫码登录
+2. **消息内容**：纯文本；含特殊字符时用单引号包裹；消息长度建议 ≤1500 字（超出 QQ 限制会失败）
+3. **隐私**：QQ 消息会经过腾讯服务器，敏感内容（密钥/密码）严禁通过 QQ 发送
+4. **只发不读**：本技能只负责「发消息」「查状态」「收主公的图」，不读取 QQ 聊天记录（qq-bridge 侧的白名单与斜杠指令体系不变）
