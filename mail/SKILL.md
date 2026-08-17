@@ -17,7 +17,7 @@ IMAP 是标准邮件协议（993 SSL），用**授权码/专用密码**登录，
 |---|---|
 | `MAIL_IMAP_HOST` | IMAP 服务器（如 `imap.qq.com` / `imap.163.com` / `imap.gmail.com`） |
 | `MAIL_IMAP_PORT` | 端口，默认 `993`（SSL） |
-| `MAIL_IMAP_USER` | 邮箱账号（如 `xxx@qq.com`） |
+| `MAIL_IMAP_USER` | 邮箱账号（如 `user@example.com`） |
 | `MAIL_IMAP_PASS` | **授权码**（QQ/163）或**应用专用密码**（Gmail/Outlook），非登录密码 |
 
 > 旧变量名 `QQMAIL_IMAP_USER` / `QQMAIL_IMAP_PASS` 仍兼容（自动回退），无需迁移。
