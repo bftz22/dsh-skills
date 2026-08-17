@@ -1,14 +1,14 @@
-// mail-check.mjs - IMAP 直连 QQ 邮箱查询（不经网页）
+// mail-check.mjs - IMAP 直连邮箱查询（支持 QQ/163/新浪/Gmail/Outlook 等任意 IMAP 邮箱）
 // 用法: node mail-check.mjs [--unseen] [--limit N] [--folders] [--json] [--download <目录>] [--route [关键词]]
 // --download <目录>: 下载最近 --limit 封邮件中的附件到指定目录（用于收取诊断文件等）
 // --route [关键词]: 分流模式——主题含关键词（默认"诊断信息"）的邮件：附件下载到
-//    %USERPROFILE%\AI交接指南\04_报告\报错收集\ 并将邮件移入 IMAP 文件夹"报错收集"（自动创建），
+//    指定目录（默认 MAIL_ROUTE_DIR 环境变量，未设置则用户桌面\报错收集；本机由 .env 指定）并将邮件移入 IMAP 文件夹（自动创建），
 //    与正常邮件分离，不混在收件箱。关键词可带参：--route "报错|诊断"
-// 凭据从 <dsh>/.env 的 QQMAIL_IMAP_USER / QQMAIL_IMAP_PASS 读取
+// 凭据从 deepseek-harness/.env 的 MAIL_IMAP_USER / MAIL_IMAP_PASS 读取（兼容旧 QQMAIL_* 变量名）
 import { ImapFlow } from 'imapflow';
 import { readFileSync, createWriteStream, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
-import os from 'os';
+import { homedir } from 'os';
 
 const args = process.argv.slice(2);
 const opt = {
@@ -29,7 +29,6 @@ if (ri >= 0) {
   if (args[ri + 1] && !args[ri + 1].startsWith('--')) opt.routeKeyword = args[ri + 1];
 }
 const ROUTE_FOLDER = '报错收集';
-const ROUTE_DIR = join(os.homedir(), 'AI交接指南', '04_报告', '报错收集');
 if (opt.route) mkdirSync(ROUTE_DIR, { recursive: true });
 
 // 附件文件名解码（=?UTF-8?B?...?= 与 =?GBK?B?...?=）
@@ -48,18 +47,23 @@ function decodeMimeWord(s) {
   } catch { return s; }
 }
 
-// 读 .env（默认桥工作区；可用 --env 指定）
+// 读 .env（默认桥工作区；可用 DSH_WORKSPACE 或 --env 指定）
 const envPath = process.env.DSH_WORKSPACE
   ? process.env.DSH_WORKSPACE + '/.env'
-  : join(os.homedir(), 'deepseek-harness', '.env');
+  : join(homedir(), 'deepseek-harness', '.env');
 const envText = readFileSync(envPath, 'utf8');
 const getEnv = (n) => {
   const m = envText.match(new RegExp('^' + n + '=(.*)$', 'm'));
   return m ? m[1].trim() : '';
 };
-const user = getEnv('QQMAIL_IMAP_USER') || process.env.QQMAIL_IMAP_USER;
-const pass = getEnv('QQMAIL_IMAP_PASS') || process.env.QQMAIL_IMAP_PASS;
-if (!user || !pass) { console.error('ERR: 未配置 QQMAIL_IMAP_USER/PASS'); process.exit(1); }
+// 通用 IMAP 配置（支持 QQ/163/新浪/Gmail/Outlook 等任意邮箱；兼容旧 QQMAIL_* 变量名）
+const host = getEnv('MAIL_IMAP_HOST') || process.env.MAIL_IMAP_HOST || getEnv('QQMAIL_IMAP_HOST') || 'imap.qq.com';
+const port = parseInt(getEnv('MAIL_IMAP_PORT') || process.env.MAIL_IMAP_PORT || getEnv('QQMAIL_IMAP_PORT') || '993', 10);
+const user = getEnv('MAIL_IMAP_USER') || process.env.MAIL_IMAP_USER || getEnv('QQMAIL_IMAP_USER') || process.env.QQMAIL_IMAP_USER;
+const pass = getEnv('MAIL_IMAP_PASS') || process.env.MAIL_IMAP_PASS || getEnv('QQMAIL_IMAP_PASS') || process.env.QQMAIL_IMAP_PASS;
+if (!user || !pass) { console.error('ERR: 未配置 IMAP 凭据（.env 的 MAIL_IMAP_USER/MAIL_IMAP_PASS，兼容旧 QQMAIL_IMAP_USER/PASS）'); process.exit(1); }
+// 报错收集目录（分流模式附件落点）
+const ROUTE_DIR = getEnv('MAIL_ROUTE_DIR') || process.env.MAIL_ROUTE_DIR || join(homedir(), 'Desktop', '报错收集');
 
 // 要紧度规则
 const HIGH = /验证码|安全|security|alert|密码|password|reset|billing|invoice|验证|verify|authenticat|登录|sign\s*in|告警/i;
@@ -131,14 +135,14 @@ async function routeOnly(client) {
 }
 
 const client = new ImapFlow({
-  host: 'imap.qq.com', port: 993, secure: true,
+  host, port, secure: true,
   auth: { user, pass },
   logger: false,
 });
 
 try {
   await client.connect();
-  console.log(`[connected] ${user} @ imap.qq.com:993`);
+  console.log(`[connected] ${user} @ ${host}:${port}`);
 
   if (opt.folders) {
     const list = await client.list();
