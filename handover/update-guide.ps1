@@ -1,54 +1,41 @@
-# update-guide.ps1 — 刷新 AI 交接指南的状态快照段 + 生成带时间戳快照文件
+﻿# update-guide.ps1 — 生成带时间戳的状态快照文件（P1-② 2026-08-19 主公拍板：主指南不再被自动改写）
 # 用法：powershell -File update-guide.ps1
-# 兼容 PS 5.1 / 7；只读写交接指南目录（HANDOVER_DIR 优先），无任何危险操作
+# 兼容 PS 5.1 / 7；只读写交接指南目录（自动探测 F:\AI交接指南 优先，D:\下载\AI交接指南 兜底），无任何危险操作
 $ErrorActionPreference = 'Continue'
 
-# 自动探测指南目录（HANDOVER_DIR 优先，D:/C 兜底；都没有则自动创建 %USERPROFILE%\AI交接指南）
-function Find-HandoverBase {
-  foreach ($b in @($env:HANDOVER_DIR, 'D:\AI交接指南', 'C:\AI交接指南')) {
-    if ($b -and (Test-Path $b)) { return $b }
-  }
-  return $null
+# 自动探测指南目录（F 优先 D 兜底；优先新版子文件夹结构，兼容旧版平铺）
+$base = $null
+foreach ($b in @('F:\AI交接指南', 'D:\下载\AI交接指南')) {
+  if (Test-Path $b) { $base = $b; break }
 }
-$base = Find-HandoverBase
+# 都没有：自动创建目录骨架（HANDOVER_DIR 环境变量优先，其次 F 盘）
 if (-not $base) {
-  $base = Join-Path $HOME 'AI交接指南'
+  $base = $env:HANDOVER_DIR
+  if (-not $base) { $base = 'F:\AI交接指南' }
   Write-Output "INFO: 未找到交接指南目录，自动创建：$base"
   foreach ($d in @('00_主指南', '01_交接日志', '02_简报', '03_状态快照', '04_报告', '06_贤臣档案')) {
     $p = Join-Path $base $d
     if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p -Force | Out-Null }
   }
 }
-$guide = Get-ChildItem $base -Recurse -Filter 'AI交接指南-*.md' -File -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if (-not $guide) {
-  # 主指南不存在：创建最小占位主指南（含快照标记段，保证后续写入正常）
-  $guideFile = Join-Path $base '00_主指南\AI交接指南-' + (Get-Date -Format 'yyyy-MM-dd') + '.md'
+# 主指南不再被本脚本改写（P1-② 2026-08-19 主公拍板）：仅确保文件存在，缺失时创建最小占位
+$guide = Join-Path $base '00_主指南\AI交接指南-2026-08-16.md'
+if (-not (Test-Path $guide) -and -not (Test-Path (Join-Path $base 'AI交接指南-2026-08-16.md'))) {
   $placeholder = @"
 # AI 交接指南（自动初始化）
 
-> 由 update-guide.ps1 自动创建（$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')）
-
-## 状态快照
-
-<!-- SNAPSHOT:START -->
-<!-- SNAPSHOT:END -->
+> 由 update-guide.ps1 自动创建（$([DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss'))）
+> 状态快照见 03_状态快照\ 目录（由 update-guide.ps1 生成，主指南不再内嵌快照段）
 "@
-  [System.IO.File]::WriteAllText($guideFile, $placeholder, (New-Object System.Text.UTF8Encoding($false)))
-  Write-Output "INFO: 已创建主指南占位文件：$guideFile"
-  $guide = Get-Item $guideFile
+  [System.IO.File]::WriteAllText($guide, $placeholder, (New-Object System.Text.UTF8Encoding($false)))
+  Write-Output "INFO: 已创建主指南占位文件：$guide"
 }
-$guide = $guide.FullName
 if (Test-Path (Join-Path $base '03_状态快照')) {
   $snapDir = Join-Path $base '03_状态快照'
 } else {
   $snapDir = $base
 }
 $utf8   = New-Object System.Text.UTF8Encoding($false)
-
-# 服务日志与工作流路径（可用环境变量覆盖）
-$bridgeLog = $env:BRIDGE_LOG;      if (-not $bridgeLog) { $bridgeLog = 'C:\deepseek-harness\bridge.log' }
-$comfyLog  = $env:COMFYUI_LOG;     if (-not $comfyLog)  { $comfyLog  = 'C:\ComfyUI\user\comfyui.log' }
-$wfDir     = $env:COMFYUI_WORKFLOWS; if (-not $wfDir)   { $wfDir     = 'C:\ComfyUI\user\default\workflows' }
 
 $now = Get-Date
 $sb = New-Object System.Text.StringBuilder
@@ -86,7 +73,9 @@ function Test-Http([string]$u) {
   catch { return "DOWN" }
 }
 $bridge = Test-Http 'http://127.0.0.1:8787/v1/models'
-$comfy  = Test-Http 'http://127.0.0.1:8188/system_stats'
+$comfyRaw = Test-Http 'http://127.0.0.1:8188/system_stats'
+# 按需启动模式（2026-08-16 用户定）：ComfyUI 平时不常驻，DOWN 属正常
+$comfy  = if ($comfyRaw -eq 'DOWN') { 'DOWN（按需启动，正常）' } else { $comfyRaw }
 
 $procs = Get-CimInstance Win32_Process | Where-Object {
   $_.Name -match 'node|python|guard|cmd' -and $_.CommandLine -match 'server\.mjs|main\.py|guard\.exe|watchdog'
@@ -107,7 +96,7 @@ Add-Line ("| watchdog 看门狗 | $([int]($null -ne $pWatch)) | $pWatch |")
 try {
   $q = Invoke-RestMethod -Uri 'http://127.0.0.1:8188/queue' -TimeoutSec 3
   Add-Line ("- ComfyUI 队列：运行 {0} / 待办 {1}" -f @($q.queue_running).Count, @($q.queue_pending).Count)
-} catch { Add-Line "- ComfyUI 队列：无法获取" }
+} catch { Add-Line "- ComfyUI 队列：未运行（按需启动，正常）" }
 
 # ---------- 日志尾部 ----------
 Add-Line ""
@@ -129,8 +118,8 @@ function Read-Tail([string]$path, [int]$n) {
   }
 }
 foreach ($lg in @(
-  @{ N = 'bridge.log'; P = $bridgeLog },
-  @{ N = 'comfyui.log'; P = $comfyLog }
+  @{ N = 'bridge.log'; P = 'C:\Users\Administrator\deepseek-harness\bridge.log' },
+  @{ N = 'comfyui.log'; P = 'F:\ComfyUI-aki-v3.2\ComfyUI\user\comfyui.log' }
 )) {
   if (Test-Path $lg.P) {
     $tail = Read-Tail $lg.P 2
@@ -145,6 +134,7 @@ foreach ($lg in @(
 Add-Line ""
 Add-Line "### 工作流 / 模型（最近修改时间）"
 Add-Line ""
+$wfDir = 'F:\ComfyUI-aki-v3.2\ComfyUI\user\default\workflows'
 if (Test-Path $wfDir) {
   Get-ChildItem $wfDir -File | Sort-Object LastWriteTime -Descending | Select-Object -First 6 | ForEach-Object {
     Add-Line ("- {0}（{1:MM-dd HH:mm}）" -f $_.Name, $_.LastWriteTime)
@@ -153,24 +143,15 @@ if (Test-Path $wfDir) {
 
 $snapshot = $sb.ToString()
 
-# ---------- 写回指南标记区（只动标记区） ----------
-$startTag = '<!-- SNAPSHOT:START -->'
-$endTag   = '<!-- SNAPSHOT:END -->'
-$content = [System.IO.File]::ReadAllText($guide, $utf8)
-$si = $content.IndexOf($startTag)
-$ei = $content.IndexOf($endTag)
-if ($si -ge 0 -and $ei -gt $si) {
-  $head = $content.Substring(0, $si + $startTag.Length)
-  $tail = $content.Substring($ei)
-  $newContent = $head + "`r`n" + $snapshot + "`r`n" + $tail
-  [System.IO.File]::WriteAllText($guide, $newContent, $utf8)
-  Write-Output "OK: 指南状态快照已刷新 ($guide)"
-} else {
-  Write-Output "WARN: 指南中未找到快照标记，跳过写入（请先在指南中放置 $startTag ... $endTag 标记段）"
-}
-
 # ---------- 生成带时间戳快照文件（保留历史） ----------
 $snapFile = Join-Path $snapDir ("状态快照-" + $now.ToString('yyyyMMdd-HHmm') + '.md')
 $header = "# 状态快照 $($now.ToString('yyyy-MM-dd HH:mm'))`r`n`r`n"
 [System.IO.File]::WriteAllText($snapFile, $header + $snapshot, $utf8)
 Write-Output "OK: 快照文件已生成 ($snapFile)"
+
+# ---------- 自动归档旧快照（仅保留最新 1 份，2026-08-18 整理优化） ----------
+$arcSnap = Join-Path $base '99_归档\状态快照归档'
+if (-not (Test-Path $arcSnap)) { New-Item -ItemType Directory -Force -Path $arcSnap | Out-Null }
+Get-ChildItem $snapDir -File -Filter '状态快照-*.md' | Where-Object { $_.FullName -ne $snapFile } | ForEach-Object {
+  Move-Item $_.FullName (Join-Path $arcSnap $_.Name) -Force
+}

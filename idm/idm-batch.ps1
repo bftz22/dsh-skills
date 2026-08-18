@@ -8,19 +8,9 @@ param(
   [int]$TimeoutSec = 1800
 )
 
-# resolve IDM path: env IDM_PATH > common install locations
-$IDM = $env:IDM_PATH
-if (-not $IDM) {
-  $candidates = @(
-    "$env:ProgramFiles\Internet Download Manager\IDMan.exe",
-    "${env:ProgramFiles(x86)}\Internet Download Manager\IDMan.exe",
-    "$env:LOCALAPPDATA\Programs\Internet Download Manager\IDMan.exe"
-  )
-  foreach ($c in $candidates) { if (Test-Path $c) { $IDM = $c; break } }
-}
-if (-not $IDM) { Write-Host "[FAIL] IDM not found. Set env IDM_PATH to IDMan.exe full path."; exit 1 }
+$IDM = "D:\idm\Internet Download Manager\IDMan.exe"
 $ErrorActionPreference = "Stop"
-$DefaultDir = "$env:USERPROFILE\Downloads"
+$DefaultDir = "D:\download"
 
 function Get-Sha1($path) {
   $sha = [System.Security.Cryptography.SHA1]::Create()

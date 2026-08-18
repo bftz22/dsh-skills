@@ -1,7 +1,8 @@
 # 浏览器操作技能（browser）
+> 开源级别：**open（可开源）**——已/可同步至 dsh-skills 公开仓库
 
 > 用途：抓取网页内容 / 打开浏览器页面 / 无头浏览器自动化（填表、点击、截图）
-> 依赖：Node.js >= 18 + Playwright（`npm install playwright && npx playwright install chromium`）
+> 工具位置：`C:\Users\Administrator\browser-tools\`（Playwright + Chromium 已安装，2026-08-16）
 > 创建：2026-08-16 · 已实测验证
 
 ## 三种能力与选择
@@ -15,7 +16,7 @@
 ## 自动化用法
 
 ```
-node browser-run.mjs <url> [参数...]
+node C:\Users\Administrator\browser-tools\browser-run.mjs <url> [参数...]
 ```
 
 | 参数 | 说明 |
@@ -32,24 +33,25 @@ node browser-run.mjs <url> [参数...]
 
 ```powershell
 # 读页面文本
-node browser-run.mjs https://www.baidu.com --text
+node C:\Users\Administrator\browser-tools\browser-run.mjs https://www.baidu.com --text
 
 # 搜索流程：填表 → 点击 → 等待 → 截图
-node browser-run.mjs https://www.baidu.com --fill "input[name=wd]=天气预报" --click "input[type=submit]" --wait 2500 --shot C:\tmp\search.png
+node C:\Users\Administrator\browser-tools\browser-run.mjs https://www.baidu.com --fill "input[name=wd]=天气预报" --click "input[type=submit]" --wait 2500 --shot C:\tmp\search.png
 ```
 
 ## 注意事项
 
 1. **反爬**：部分站点对无头浏览器有限制（如百度搜索框 fill 超时）——脚本已内置兜底（JS 直接赋值），仍失败可加 `--wait` 或 `--headful`
-2. **登录态**：Playwright 是无痕环境，需要登录的站点需另行处理 Cookie（暂未封装）
-3. **回归验证**：修改 `browser-run.mjs` 后，先跑本地测试页确认不破坏：
+2. **看图**：截图产物可用 `skills\vision` 技能（本地 Qwen2.5-VL）理解内容
+3. **登录态**：Playwright 是无痕环境，需要登录的站点需另行处理 Cookie（暂未封装）
+4. **回归验证**：修改 `browser-run.mjs` 后，先跑本地测试页确认不破坏：
    ```powershell
-   node browser-run.mjs "file:///<本目录>/test-form.html" --fill "#kw=测试" --click "#btn" --text
+   node C:\Users\Administrator\browser-tools\browser-run.mjs "file:///C:/Users/Administrator/browser-tools/test-form.html" --fill "#kw=测试" --click "#btn" --text
    ```
    预期输出包含「你输入了: 测试」
-4. **截图产物**：可配合 vision 技能（本地 Qwen2.5-VL）理解截图内容——"眼睛+网页"
+5. 本机已有 ComfyUI Python 环境未装 selenium/playwright（python 侧）；Node 侧 playwright 独立于工作区 node_modules，**不影响桥的依赖**
 
 ## 与其他技能的关系
 
-- `vision`：浏览器截图 → 视觉技能看内容
-- `handover`：新增/变更本技能后记得写交接日志
+- `skills\vision`：浏览器截图 → 视觉技能看内容 = "眼睛+网页"
+- `skills\handover`：新增/变更本技能后记得写交接日志

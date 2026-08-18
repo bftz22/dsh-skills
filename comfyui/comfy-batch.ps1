@@ -10,14 +10,9 @@
   [int]$SeedBase = 1000,
   [string]$Prefix = 'role',
   [int]$TimeoutMinutes = 15,
-  [string]$ReportDir = '',
   [switch]$DryRun
 )
 $ErrorActionPreference = 'Continue'
-
-# 配置：ComfyUI 根目录（可用环境变量 COMFYUI_ROOT 覆盖）
-$ComfyRoot = $env:COMFYUI_ROOT; if (-not $ComfyRoot) { $ComfyRoot = 'C:\ComfyUI' }
-if (-not $ReportDir) { $ReportDir = (Get-Location).Path }
 
 # ---------- 解析提示词文件 ----------
 $lines = Get-Content $PromptFile -Encoding UTF8 -ErrorAction SilentlyContinue
@@ -50,7 +45,7 @@ if ($DryRun) { Write-Host "[DryRun] 解析验证通过, 不提交"; exit 0 }
 # ---------- 检查 ComfyUI / 模型 ----------
 try { Invoke-RestMethod -Uri 'http://127.0.0.1:8188/system_stats' -TimeoutSec 5 | Out-Null }
 catch { Write-Host "[FAIL] ComfyUI 未运行"; exit 1 }
-$modelPath = Join-Path $ComfyRoot "models\checkpoints\$Model"
+$modelPath = "F:\ComfyUI-aki-v3.2\ComfyUI\models\checkpoints\$Model"
 if (-not (Test-Path $modelPath)) { Write-Host "[FAIL] 模型不存在: $modelPath"; exit 1 }
 
 # ---------- 批量提交 ----------
@@ -104,7 +99,9 @@ while ($results.Count -lt $ids.Count -and (Get-Date) -lt $deadline) {
 }
 
 # ---------- 生成报告 ----------
-$report = Join-Path $ReportDir ("ComfyUI生成报告-" + (Get-Date -Format 'yyyyMMdd-HHmm') + ".md")
+$reportDir = "F:\AI交接指南\04_报告\ComfyUI生成报告"
+if (-not (Test-Path $reportDir)) { New-Item -ItemType Directory -Path $reportDir -Force | Out-Null }
+$report = Join-Path $reportDir ("ComfyUI生成报告-" + (Get-Date -Format 'yyyyMMdd-HHmm') + ".md")
 $sb = New-Object System.Text.StringBuilder
 [void]$sb.AppendLine("# ComfyUI 批量生成报告")
 [void]$sb.AppendLine('')
@@ -120,7 +117,7 @@ foreach ($j in $ids) {
   [void]$sb.AppendLine(('| {0} | {1} | {2} | `{3}` |' -f ($j.idx+1), $j.name, $st, $f))
 }
 [void]$sb.AppendLine('')
-[void]$sb.AppendLine('图片目录：$env:COMFYUI_ROOT\output\')
+[void]$sb.AppendLine('图片目录：`F:\ComfyUI-aki-v3.2\ComfyUI\output\`')
 [IO.File]::WriteAllText($report, $sb.ToString(), (New-Object System.Text.UTF8Encoding($true)))
 Write-Host "报告: $report"
 Write-Host "完成 $($results.Count)/$($ids.Count)"

@@ -3,6 +3,7 @@
 # 兼容 PS 5.1；无外部依赖
 param([Parameter(Mandatory = $true)][string]$Image)
 
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = 'Continue'
 if (-not (Test-Path $Image)) { Write-Output "ERR: 图片不存在: $Image"; exit 1 }
 

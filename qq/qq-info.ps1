@@ -1,4 +1,4 @@
-# qq-info.ps1 - 查询贤臣(NapCat)在线状态 / 好友列表
+﻿# qq-info.ps1 - 查询贤臣(NapCat)在线状态 / 好友列表
 # 用法: powershell -File qq-info.ps1 [-Friends]
 # 凭据: 读 .env 的 NAPCAT_API / NAPCAT_TOKEN
 
@@ -9,7 +9,7 @@ param(
 $ErrorActionPreference = 'Stop'
 
 function Get-EnvVal($key) {
-  $envFile = "$env:USERPROFILE\deepseek-harness\.env"
+  $envFile = 'C:\Users\Administrator\deepseek-harness\.env'
   $m = Select-String -Path $envFile -Pattern "^$key\s*=\s*(.*)$"
   if ($m) { return $m.Matches[0].Groups[1].Value.Trim() }
   return $null

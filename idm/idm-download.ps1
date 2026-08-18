@@ -2,24 +2,13 @@
 # usage: powershell -File idm-download.ps1 -Url "https://..." [-Dir "D:\download"] [-File "name.jar"] [-Sha1 "hex"] [-TimeoutSec 900]
 param(
   [Parameter(Mandatory = $true)][string]$Url,
-  [string]$Dir = "",
+  [string]$Dir = "D:\download",
   [string]$File = "",
   [string]$Sha1 = "",
   [int]$TimeoutSec = 900
 )
 
-# resolve IDM path: env IDM_PATH > common install locations
-$IDM = $env:IDM_PATH
-if (-not $IDM) {
-  $candidates = @(
-    "$env:ProgramFiles\Internet Download Manager\IDMan.exe",
-    "${env:ProgramFiles(x86)}\Internet Download Manager\IDMan.exe",
-    "$env:LOCALAPPDATA\Programs\Internet Download Manager\IDMan.exe"
-  )
-  foreach ($c in $candidates) { if (Test-Path $c) { $IDM = $c; break } }
-}
-if (-not $IDM) { Write-Host "[FAIL] IDM not found. Set env IDM_PATH to IDMan.exe full path."; exit 1 }
-if ($Dir -eq "") { $Dir = "$env:USERPROFILE\Downloads" }
+$IDM = "D:\idm\Internet Download Manager\IDMan.exe"
 $ErrorActionPreference = "Stop"
 
 function Get-Sha1($path) {

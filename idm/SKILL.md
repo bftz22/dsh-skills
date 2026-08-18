@@ -1,7 +1,8 @@
 # IDM 多线程下载 Skill（idm-download）
+> 开源级别：**open（可开源）**——已/可同步至 dsh-skills 公开仓库
 
 > 用途：用 Internet Download Manager（IDM）多线程下载文件——**突破 CDN 单连接限速**（2026-08-16 实战：Modrinth CDN 对本机 IP 限速 1.8KB/s，curl/Node fetch 全部挂起，IDM 多线程 173 秒下完 82.5MB/23 个文件）
-> 目录：`<dsh>\skills\idm\`（dsh = DeepSeek Harness 工作区）
+> 目录：`C:\Users\Administrator\deepseek-harness\skills\idm\`
 > 创建：2026-08-17（香草纪元整合包部署实战提炼）
 
 ## 适用场景
@@ -13,7 +14,7 @@
 
 ## 前置条件
 
-1. **IDM 已安装**：`IDMan.exe`（可用环境变量 `IDM_PATH` 指定完整路径，缺省探测常见安装位置；开机自启，通常已在运行；未运行脚本会自动拉起）
+1. **IDM 已安装**：`D:\idm\Internet Download Manager\IDMan.exe`（开机自启，通常已在运行；未运行脚本会自动拉起）
 2. **PowerShell 5.1**；脚本输出为 ASCII（无中文编码问题）
 
 ## 脚本一览
@@ -26,17 +27,17 @@
 ## 调用示例
 
 ```powershell
-# 单文件：下载到指定目录并等待完成（默认下载目录）
-powershell -File idm-download.ps1 -Url "https://cdn.modrinth.com/data/xxx/versions/yyy/file.jar" -Dir "D:\games\.minecraft\mods" -File "file.jar"
+# 单文件：下载到指定目录并等待完成（默认 D:\下载）
+powershell -File idm-download.ps1 -Url "https://cdn.modrinth.com/data/xxx/versions/yyy/file.jar" -Dir "H:\PCL\.minecraft\mods" -File "file.jar"
 
 # 带 sha1 校验（不匹配会重试并报告）
-powershell -File idm-download.ps1 -Url "https://..." -Dir "D:\download" -Sha1 "52570f40e0fde4f5b0402174e170360d4f463e4b"
+powershell -File idm-download.ps1 -Url "https://..." -Dir "D:\下载" -Sha1 "52570f40e0fde4f5b0402174e170360d4f463e4b"
 
 # 批量：列表文件每行一条 URL（支持 URL|目录|文件名 三列，| 分隔）
-powershell -File idm-batch.ps1 -ListFile "D:\download\urls.txt" -Wait
+powershell -File idm-batch.ps1 -ListFile "D:\下载\urls.txt" -Wait
 
 # 批量 + sha1 校验（每行：本地文件路径|sha1）
-powershell -File idm-batch.ps1 -ListFile "D:\download\urls.txt" -Sha1File "D:\download\sha1s.txt" -Wait
+powershell -File idm-batch.ps1 -ListFile "D:\下载\urls.txt" -Sha1File "D:\下载\sha1s.txt" -Wait
 ```
 
 ## 列表文件格式（idm-batch）
@@ -44,12 +45,12 @@ powershell -File idm-batch.ps1 -ListFile "D:\download\urls.txt" -Sha1File "D:\do
 ```
 # 注释行以 # 开头，空行跳过
 https://example.com/a.zip
-https://example.com/b.zip|D:\download\sub|b.zip
-https://example.com/c.jar|D:\games\.minecraft\mods|c.jar
+https://example.com/b.zip|D:\下载\sub|b.zip
+https://example.com/c.jar|H:\PCL\.minecraft\mods|c.jar
 ```
 
 - 每行 1~3 列，用 `|` 分隔：URL | 保存目录 | 保存文件名
-- 缺省目录 = 下载目录（脚本默认 `%USERPROFILE%\Downloads`）；缺省文件名 = URL 最后一段
+- 缺省目录 = `D:\下载`；缺省文件名 = URL 最后一段
 - Sha1File 每行：`本地完整路径|sha1`，下载完成后逐行校验
 
 ## 工作原理（实战经验）
@@ -65,7 +66,7 @@ https://example.com/c.jar|D:\games\.minecraft\mods|c.jar
 1. IDM 未运行时第一次调用会弹窗（自动启动），等 5~10 秒再排队
 2. 文件名含 `+` `%20` 等特殊字符：URL 保持编码原样（如 `%2B`），-File 给解码后的真实文件名（如 `a+b.jar`）
 3. 下载完成后若 sha1 不匹配：脚本自动删除重下（最多 3 轮），仍失败则输出 FAIL
-4. IDM 自身配置的默认下载目录不影响 `/p` 指定目录
+4. IDM 下载到 `D:\idm\...` 的默认目录配置不影响 `/p` 指定目录
 5. 队列任务在 IDM 进程里顺序/并发执行；批量大文件时轮询间隔 10 秒
 
 ## 故障排查

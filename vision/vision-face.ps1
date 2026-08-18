@@ -1,27 +1,19 @@
 ﻿# vision-face.ps1 — 眼睛方案B：人脸检测（本地 YOLOv8m ONNX）
 # 用法：powershell -File vision-face.ps1 -Image "图片路径"
 # 输出：检测到的人脸数量、位置（xyxy 像素坐标）、置信度
-# 配置：环境变量 COMFYUI_ROOT（ONNX 模型位置）、COMFYUI_PYTHON（python.exe，需 numpy/cv2/onnxruntime）
 param([Parameter(Mandatory = $true)][string]$Image)
 
 $ErrorActionPreference = 'Continue'
 if (-not (Test-Path $Image)) { Write-Output "ERR: 图片不存在: $Image"; exit 1 }
 
-$ComfyRoot = $env:COMFYUI_ROOT; if (-not $ComfyRoot) { $ComfyRoot = 'C:\ComfyUI' }
-$onnxPath = Join-Path $ComfyRoot 'models\onnx\bbox\face_yolov8m.onnx'
-if (-not (Test-Path $onnxPath)) { Write-Output "ERR: 未找到人脸检测模型: $onnxPath"; exit 1 }
-$pyExe = $env:COMFYUI_PYTHON
-if (-not $pyExe -or -not (Test-Path $pyExe)) { $pyExe = Join-Path $ComfyRoot 'python\python.exe' }
-
 $py = @'
 import sys, os, numpy as np, cv2, onnxruntime
 img_path = sys.argv[1]
-onnx_path = sys.argv[2]
 img = cv2.imread(img_path)  # BGR
 if img is None:
     print('ERR: 无法读取图片'); sys.exit(1)
 h, w = img.shape[:2]
-sess = onnxruntime.InferenceSession(onnx_path, providers=['CPUExecutionProvider'])
+sess = onnxruntime.InferenceSession(r'F:\ComfyUI-aki-v3.2\ComfyUI\models\onnx\bbox\face_yolov8m.onnx', providers=['CPUExecutionProvider'])
 in_h, in_w = 640, 640
 r = min(in_h / h, in_w / w)
 new_w, new_h = max(1, int(round(w * r))), max(1, int(round(h * r)))
@@ -68,7 +60,8 @@ for i in range(len(scores)):
 '@
 $tmpPy = Join-Path $env:TEMP ("vision-face-" + [guid]::NewGuid().ToString('N') + ".py")
 [System.IO.File]::WriteAllText($tmpPy, $py, (New-Object System.Text.UTF8Encoding($false)))
-# 强制 UTF-8 输出（防止 cp1252/GBK 区域 print 中文崩溃）
+# 强制 Python 以 UTF-8 输出（防止 cp1252/GBK 区域下 print 中文报 UnicodeEncodeError）
 $env:PYTHONIOENCODING = 'utf-8'
-& $pyExe $tmpPy (Resolve-Path $Image).Path $onnxPath
+& "F:\ComfyUI-aki-v3.2\python\python.exe" $tmpPy (Resolve-Path $Image).Path
+Remove-Item Env:PYTHONIOENCODING -ErrorAction SilentlyContinue
 if (Test-Path $tmpPy) { Remove-Item $tmpPy -Force }
