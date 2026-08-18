@@ -116,7 +116,7 @@
       <div class="js"><b>御史台·监察</b><small>巡检告警</small></div>
       <div class="js"><b>内侍省·通传</b><small>朝报 / 看板</small></div>
     </div>
-    <div class="legend">说明：桥 = 尚书省的心脏 —— 出图、邮件、看板、一切工具调用都经它中转；改桥 = 改中枢，按四步走（备份→语法检查→重启→冒烟验证），由尚书省直辖，高于六部。</div>
+    <div class="legend">说明：桥 = 尚书省的心脏 —— 出图、邮件、看板、一切工具调用都经它中转；改桥 = 改中枢，按四步走（备份→语法检查→重启→冒烟验证），由尚书省直辖，高于六部。<br><b>技能（skill）管理同样归中枢</b>：技能是桥的能力插件——开发/改进、开源分级、防泄漏检查、GitHub 同步均由中枢直辖；六部只负责<b>使用</b>技能生产。<b>中枢管技能，工部用技能</b>。</div>
   </div>
 </section>
 
@@ -129,10 +129,10 @@
     <tr><td><b>礼部</b></td><td>章程、日志、报告、档案</td><td>{{HANDBOOK_DIR}}\</td><td>交接日志、报告索引 INDEX</td></tr>
     <tr><td><b>兵部</b></td><td>桥守护、安全闸门、杀毒</td><td>watchdog、guard.exe、火绒</td><td>崩溃档案、guard 源码</td></tr>
     <tr><td><b>刑部</b></td><td>守则、报错排查、事故复盘</td><td>04_报告\报错分析报告\</td><td>报错分析报告、bridge.log</td></tr>
-    <tr><td><b>工部</b></td><td>出图、浏览器、邮件、下载生产</td><td>ComfyUI、各技能</td><td>ComfyUI生成报告</td></tr>
+    <tr><td><b>工部</b></td><td>出图、浏览器、邮件、下载生产（用中枢管的技能干活）</td><td>ComfyUI、各技能（使用）</td><td>ComfyUI生成报告</td></tr>
   </table>
-  <div class="hot"><b>⚙ 尚书省·中枢（桥）</b> —— 掌桥（server.mjs）的<b>改进开发</b>：一切对话与工具调用的总枢纽，地位最核心。<br>
-  案牍：04_报告\报错分析报告\、bridge.log、server.mjs 备份。<span class="core">最核心</span></div>
+  <div class="hot"><b>⚙ 尚书省·中枢（桥）</b> —— 掌桥（server.mjs）的<b>改进开发</b>与<b>技能（skill）管理</b>（开发/开源分级/防泄漏/GitHub 同步）：一切对话与工具调用的总枢纽，地位最核心。<br>
+  案牍：04_报告\报错分析报告\、bridge.log、server.mjs 备份、skills\README.md（开源分级清单）。<span class="core">最核心</span></div>
 </section>
 
 <section id="cmd">
@@ -140,6 +140,7 @@
   <table>
     <tr><th>您说</th><th>实际发生</th></tr>
     <tr><td>"改桥：××"</td><td>按四步走（备份→语法检查→重启→冒烟验证）改进桥并呈报</td></tr>
+    <tr><td>"改技能：××"</td><td>开发/改进技能（含开源分级、防泄漏检查、GitHub 同步，中枢直辖）</td></tr>
     <tr><td>"工部出几张图：××"</td><td>启动 ComfyUI 批量出图，报告存 04_报告\ComfyUI生成报告\</td></tr>
     <tr><td>"户部告急"</td><td>自动整理硬盘，呈报各盘空间</td></tr>
     <tr><td>"今日朝报" / "今天有啥事"</td><td>六部奏报汇总成一页（看板/QQ）</td></tr>
