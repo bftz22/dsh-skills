@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👑 君主手册</title>
+<style>
+  :root{
+    --dark:#1F3864; --gold:#C9A227; --gold-soft:#E8D48B;
+    --light:#EEF1F7; --white:#fff; --gray:#4a4a4a; --line:#C9D3E8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"Microsoft YaHei","PingFang SC","Segoe UI",sans-serif;background:var(--light);color:var(--gray);line-height:1.7;}
+  .banner{background:linear-gradient(135deg,#16294d 0%,#1F3864 60%,#2a4a80 100%);color:#fff;padding:36px 20px 30px;text-align:center;}
+  .banner h1{font-size:34px;letter-spacing:6px;}
+  .banner .sub{margin-top:8px;color:var(--gold-soft);font-size:15px;letter-spacing:2px;}
+  .banner .meta{margin-top:14px;font-size:12px;color:#a8b4cc;}
+  .banner .bar{width:120px;height:3px;background:var(--gold);margin:16px auto 0;border-radius:2px;}
+  nav{position:sticky;top:0;background:#16294d;padding:8px 10px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center;z-index:9;box-shadow:0 2px 8px rgba(0,0,0,.25);}
+  nav a{color:#dfe7f5;text-decoration:none;font-size:13px;padding:4px 12px;border:1px solid #3a5488;border-radius:14px;transition:.2s;}
+  nav a:hover{background:var(--gold);color:#16294d;border-color:var(--gold);}
+  main{max-width:960px;margin:0 auto;padding:24px 16px 60px;}
+  section{background:var(--white);border-radius:12px;padding:22px 24px;margin-bottom:20px;box-shadow:0 1px 4px rgba(31,56,100,.12);border-top:4px solid var(--gold);}
+  h2{color:var(--dark);font-size:21px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px dashed var(--line);}
+  h2 .no{color:var(--gold);margin-right:8px;}
+  h3{color:var(--dark);font-size:16px;margin:16px 0 8px;}
+  p{margin:6px 0;}
+  .quote{background:var(--light);border-left:4px solid var(--gold);padding:10px 14px;border-radius:0 8px 8px 0;margin:10px 0;font-size:14px;}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px;}
+  th{background:var(--dark);color:#fff;padding:9px 12px;text-align:left;font-weight:600;}
+  td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top;}
+  tr:nth-child(even) td{background:#f7f9fd;}
+  .tag{display:inline-block;background:var(--gold);color:#16294d;font-size:12px;padding:1px 8px;border-radius:10px;font-weight:bold;margin-left:6px;}
+  .core{display:inline-block;background:#b03030;color:#fff;font-size:12px;padding:1px 8px;border-radius:10px;font-weight:bold;margin-left:6px;}
+  /* 朝堂图 */
+  .court{text-align:center;margin:14px 0 6px;}
+  .emperor{display:inline-block;background:linear-gradient(135deg,#C9A227,#a8851d);color:#fff;font-weight:bold;font-size:17px;padding:10px 34px;border-radius:10px;letter-spacing:4px;box-shadow:0 3px 8px rgba(0,0,0,.18);}
+  .link-v{width:2px;height:22px;background:#8fa3c8;margin:0 auto;}
+  .sansheng{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:4px 0;}
+  .sheng{flex:1;min-width:150px;max-width:270px;border-radius:10px;padding:10px 8px;font-size:14px;}
+  .sheng b{font-size:16px;letter-spacing:2px;}
+  .sheng small{display:block;font-size:12px;opacity:.9;}
+  .s1{background:#dbe4f5;color:#1F3864;border:1px solid #b9c8e8;}
+  .s2{background:#f2ead6;color:#7a5f12;border:1px solid #ddca8f;}
+  .s3{background:#e8f0f7;color:#1F3864;border:2px solid #1F3864;}
+  .liubu{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:6px 0;}
+  .bu{width:130px;border-radius:10px;padding:9px 6px;font-size:13px;background:var(--white);border:1px solid var(--line);}
+  .bu b{display:block;font-size:15px;color:var(--dark);}
+  .bu small{font-size:11px;color:#7a8494;}
+  .zhongshu{width:210px;margin:6px auto 0;border-radius:10px;padding:10px 8px;font-size:13px;background:linear-gradient(135deg,#b03030,#8c2626);color:#fff;border:2px solid #e8b4b4;}
+  .zhongshu b{font-size:15px;letter-spacing:2px;}
+  .zhongshu small{display:block;font-size:11px;opacity:.92;}
+  .jianshi{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px;}
+  .js{width:230px;border-radius:10px;padding:9px 8px;font-size:13px;background:#f5efe0;border:1px solid #e0cf9a;color:#7a5f12;}
+  .js b{font-size:14px;}
+  .legend{font-size:12px;color:#8a93a5;margin-top:8px;}
+  .hot{background:#fdf3f3;border:1px solid #ecc;border-radius:8px;padding:12px 14px;margin:10px 0;}
+  .hot b{color:#b03030;}
+  footer{text-align:center;color:#9aa3b5;font-size:12px;padding:20px;border-top:1px solid var(--line);}
+  @media(max-width:640px){
+    .banner h1{font-size:26px;letter-spacing:3px;}
+    section{padding:16px 14px;}
+    table{font-size:13px;}
+    td,th{padding:6px 8px;}
+    .bu{width:100px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <h1>👑 君主手册</h1>
+  <div class="sub">主公专用 · 系统全局一览 · 说人话即可指挥</div>
+  <div class="bar"></div>
+  <div class="meta">模板版本 · 双格式：本网页版 + md 源文档</div>
+</div>
+
+<nav>
+  <a href="#rule">一句话规则</a>
+  <a href="#court">朝堂总览</a>
+  <a href="#ministry">六部衙门</a>
+  <a href="#cmd">指挥口令</a>
+  <a href="#quick">关键速查</a>
+  <a href="#help">日常自救</a>
+  <a href="#law">规矩权杖</a>
+</nav>
+
+<main>
+
+<section id="rule">
+  <h2><span class="no">一</span>一句话规则</h2>
+  <div class="quote"><b>您开口就是圣旨</b>——任何一句话，管家（贤臣）都会当作最高优先级执行。<br>
+  想让管家干什么就说人话，不用记任何命令格式；想让管家<b>别动</b>什么，也直接说。</div>
+</section>
+
+<section id="court">
+  <h2><span class="no">二</span>朝堂总览（三省六部 · 桥为中枢）</h2>
+  <div class="court">
+    <div class="emperor">皇 帝（主公）</div>
+    <div class="link-v"></div>
+    <div class="sansheng">
+      <div class="sheng s1"><b>中书省·谋</b><small>管家大脑 · 拟策进言</small></div>
+      <div class="sheng s2"><b>门下省·审</b><small>guard.exe · 安全闸门</small></div>
+      <div class="sheng s3"><b>尚书省·行</b><small>桥 + 技能 + 系统 · 执行中枢</small></div>
+    </div>
+    <div class="zhongshu"><b>⚙ 尚书省·中枢（桥）</b><small>dsh-openai-bridge · 一切对话与工具调用的总枢纽<br>改进开发直辖于此 · 地位最核心</small></div>
+    <div class="liubu">
+      <div class="bu"><b>吏部</b><small>人事凭据</small></div>
+      <div class="bu"><b>户部</b><small>仓储资源</small></div>
+      <div class="bu"><b>礼部</b><small>典章文教</small></div>
+      <div class="bu"><b>兵部</b><small>防务安全</small></div>
+      <div class="bu"><b>刑部</b><small>律令审计</small></div>
+      <div class="bu"><b>工部</b><small>营造生产</small></div>
+    </div>
+    <div class="jianshi">
+      <div class="js"><b>御史台·监察</b><small>巡检告警</small></div>
+      <div class="js"><b>内侍省·通传</b><small>朝报 / 看板</small></div>
+    </div>
+    <div class="legend">说明：桥 = 尚书省的心脏 —— 出图、邮件、看板、一切工具调用都经它中转；改桥 = 改中枢，按四步走（备份→语法检查→重启→冒烟验证），由尚书省直辖，高于六部。</div>
+  </div>
+</section>
+
+<section id="ministry">
+  <h2><span class="no">三</span>六部衙门</h2>
+  <table>
+    <tr><th>部</th><th>掌什么</th><th>衙门位置</th><th>案牍（记录）</th></tr>
+    <tr><td><b>吏部</b></td><td>账号、密码、钥匙、人事记录</td><td>加密包、06_贤臣档案\</td><td>取用登记簿、用户档案</td></tr>
+    <tr><td><b>户部</b></td><td>硬盘空间、下载、素材仓库</td><td>各磁盘、{{DOWNLOAD_DIR}}\</td><td>硬盘整理报告、H盘素材报告</td></tr>
+    <tr><td><b>礼部</b></td><td>章程、日志、报告、档案</td><td>{{HANDBOOK_DIR}}\</td><td>交接日志、报告索引 INDEX</td></tr>
+    <tr><td><b>兵部</b></td><td>桥守护、安全闸门、杀毒</td><td>watchdog、guard.exe、火绒</td><td>崩溃档案、guard 源码</td></tr>
+    <tr><td><b>刑部</b></td><td>守则、报错排查、事故复盘</td><td>04_报告\报错分析报告\</td><td>报错分析报告、bridge.log</td></tr>
+    <tr><td><b>工部</b></td><td>出图、浏览器、邮件、下载生产</td><td>ComfyUI、各技能</td><td>ComfyUI生成报告</td></tr>
+  </table>
+  <div class="hot"><b>⚙ 尚书省·中枢（桥）</b> —— 掌桥（server.mjs）的<b>改进开发</b>：一切对话与工具调用的总枢纽，地位最核心。<br>
+  案牍：04_报告\报错分析报告\、bridge.log、server.mjs 备份。<span class="core">最核心</span></div>
+</section>
+
+<section id="cmd">
+  <h2><span class="no">四</span>指挥口令（说人话即可）</h2>
+  <table>
+    <tr><th>您说</th><th>实际发生</th></tr>
+    <tr><td>"改桥：××"</td><td>按四步走（备份→语法检查→重启→冒烟验证）改进桥并呈报</td></tr>
+    <tr><td>"工部出几张图：××"</td><td>启动 ComfyUI 批量出图，报告存 04_报告\ComfyUI生成报告\</td></tr>
+    <tr><td>"户部告急"</td><td>自动整理硬盘，呈报各盘空间</td></tr>
+    <tr><td>"今日朝报" / "今天有啥事"</td><td>六部奏报汇总成一页（看板/QQ）</td></tr>
+    <tr><td>"查刑部案卷：××"</td><td>跨库搜索历史报错/日志/报告</td></tr>
+    <tr><td>"吏部取凭据"（口令"{{授权口令}}"（用户自定义））</td><td>走登记流程取用，用后报告</td></tr>
+    <tr><td>"桥怎么了" / "现在什么情况"</td><td>管家查状态立即呈报</td></tr>
+    <tr><td>"把××安排了"</td><td>记入待办/廷议，自动跟进</td></tr>
+  </table>
+</section>
+
+<section id="quick">
+  <h2><span class="no">五</span>关键信息速查</h2>
+  <table>
+    <tr><th>项目</th><th>位置/值</th></tr>
+    <tr><td>与管家对话</td><td>Chatbox（桌面快捷方式）</td></tr>
+    <tr><td>朝政看板</td><td>桌面「朝政看板」→ http://127.0.0.1:8787/</td></tr>
+    <tr><td><b>君主手册（本页）</b></td><td><b>桌面「君主手册」快捷方式 → 网页版</b>（md 源文档：{{HANDBOOK_DIR}}\05_君主手册\）</td></tr>
+    <tr><td>出图引擎</td><td>ComfyUI（按需启动，出图时管家自动拉起）</td></tr>
+    <tr><td>待办/待决</td><td>{{HANDBOOK_DIR}}\06_贤臣档案\任务清单.md（廷议区=等您拍板的事）</td></tr>
+    <tr><td>报告索引</td><td>{{HANDBOOK_DIR}}\04_报告\INDEX.md</td></tr>
+    <tr><td>交接日志</td><td>{{HANDBOOK_DIR}}\01_交接日志\交接日志.md</td></tr>
+    <tr><td>凭据加密包</td><td>{{VAULT_FILE}}（用户自定位置与口令，管家按口令授权制管理）</td></tr>
+    <tr><td>机器备份盘</td><td>各盘空间看板可见；C/G 盘偏紧是常态观察项</td></tr>
+  </table>
+</section>
+
+<section id="help">
+  <h2><span class="no">六</span>日常自救（不用叫管家）</h2>
+  <table>
+    <tr><th>情况</th><th>怎么办</th></tr>
+    <tr><td>对话没反应</td><td>等 30~60 秒（重启后冷启动属正常）；还不行就双击桌面「重启桥」快捷方式</td></tr>
+    <tr><td>对话报 [桥接错误]</td><td>截图发给管家，管家查 bridge.log 定位（先查后试）</td></tr>
+    <tr><td>出图失败</td><td>直接说"出图失败，报错××"，管家查 ComfyUI 日志</td></tr>
+    <tr><td>想找旧报告</td><td>问管家，或直接翻 {{HANDBOOK_DIR}}\04_报告\INDEX.md</td></tr>
+  </table>
+</section>
+
+<section id="law">
+  <h2><span class="no">七</span>规矩（您的权杖）</h2>
+  <ol style="margin-left:22px;">
+    <li style="margin:6px 0;"><b>重大变更先奏后行</b>：管家拟方案 → 您拍板 → 才动手（急事可先斩后奏，但必须报）</li>
+    <li style="margin:6px 0;"><b>口令授权制</b>：涉及 {{VAULT_DIR}} 一律要口令「{{授权口令}}」（用户自定义）；管家用后必须报告并登记</li>
+    <li style="margin:6px 0;"><b>注册表/系统级操作</b>：需要您口头授权，管家不擅动</li>
+    <li style="margin:6px 0;"><b>改律</b>：章程（守则）修改一律经您批准</li>
+    <li style="margin:6px 0;"><b>交付物</b>：默认放 {{DOWNLOAD_DIR}}\；任务报告存 {{HANDBOOK_DIR}}\04_报告\</li>
+  </ol>
+</section>
+
+</main>
+
+<footer>👑 君主手册 · 网页模板由 dsh-skills court 技能提供</footer>
+</body>
+</html>

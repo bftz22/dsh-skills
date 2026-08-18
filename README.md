@@ -1,7 +1,8 @@
 # dsh-skills
 
-给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 智能体（Agent）用的七个实战技能包：
+给 [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 智能体（Agent）用的七个实战技能包 + 一个可选扩展包：
 **ComfyUI 图像生成 / 视觉眼睛 / 浏览器自动化 / 交接维护 / IDM 多线程下载 / 邮件查询 / QQ 渠道**。
+`court`（朝政体系）为**可选技能，默认不安装**——需要「三省六部·君主视角」体验时再手动复制。
 
 > 这些技能来自一台真实运行 dsh 的 Windows 机器上的日常实践——每个脚本都经过实际任务验证，
 > 踩坑记录直接写在对应 SKILL.md 里。适合想让自己的 Agent "会出图、会看图、会上网、会交接、会下载、会查邮件、会发 QQ"的用户。
@@ -14,7 +15,8 @@ skills\
 ├── handover\  交接维护：简报/日志/状态快照，让多任 AI 会话无缝衔接
 ├── idm\       IDM 多线程下载：突破 CDN 单连接限速、批量队列、sha1 校验
 ├── mail\      邮件查询：IMAP 直连 QQ 邮箱（秒级、要紧度分级、附件下载/分流）
-└── qq\        QQ 渠道：经 NapCat 发私聊消息、查在线状态、接收白名单图片
+├── qq\        QQ 渠道：经 NapCat 发私聊消息、查在线状态、接收白名单图片
+└── court\     朝政体系（⚠️ 可选·默认不安装）：三省六部君主手册模板（HTML/md）+ 朝政看板模板
 ```
 
 ## ✨ 技能一览
@@ -28,6 +30,7 @@ skills\
 | **idm** | 单文件/批量多线程下载（URL 列表）、等待完成、sha1 校验自动重试 | IDM（IDMan.exe，可用 `IDM_PATH` 指定） |
 | **mail** | IMAP 直连 QQ 邮箱：最近/未读邮件、要紧度分级、附件下载、报错邮件分流 | Node.js + imapflow；.env 授权码 |
 | **qq** | 经本机 NapCat 发私聊消息、查在线/好友列表、接收白名单大号图片 | NapCat（127.0.0.1:3000）；.env 凭据 |
+| **court** ⚠️ 可选 | 三省六部·君主视角：君主手册（网页/md 双格式模板）、朝政看板（单文件 HTML，30 秒轮询数据端点） | 无硬依赖；看板需桥提供 `GET /system/board` 端点 |
 
 ## 🚀 快速开始
 
@@ -44,6 +47,9 @@ git clone https://github.com/bftz22/dsh-skills.git
 # 浏览器技能：npm install playwright && npx playwright install chromium
 # 邮件技能：cd skills\mail && npm install（imapflow）
 # QQ 技能：需部署 NapCat（参考 qq/SKILL.md 与 qq-bridge 文档）
+
+# ⚠️ court（朝政体系）默认不安装：需要「三省六部·君主视角」（君主手册/朝政看板）时，
+#    手动复制 court 目录并按 court/SKILL.md 替换 {{占位符}} 即可，不影响其他任何技能
 ```
 
 ### 配置（环境变量，均可选）
