@@ -2,7 +2,7 @@
 > 开源级别：**open（可开源）**——已/可同步至 dsh-skills 公开仓库
 
 > 用途：抓取网页内容 / 打开浏览器页面 / 无头浏览器自动化（填表、点击、截图）
-> 工具位置：`C:\Users\Administrator\browser-tools\`（Playwright + Chromium 已安装，2026-08-16）
+> 工具位置：`{BROWSER_TOOLS}\`（Playwright + Chromium 已安装，2026-08-16）
 > 创建：2026-08-16 · 已实测验证
 
 ## 三种能力与选择
@@ -16,7 +16,7 @@
 ## 自动化用法
 
 ```
-node C:\Users\Administrator\browser-tools\browser-run.mjs <url> [参数...]
+node {BROWSER_TOOLS}\browser-run.mjs <url> [参数...]
 ```
 
 | 参数 | 说明 |
@@ -33,10 +33,10 @@ node C:\Users\Administrator\browser-tools\browser-run.mjs <url> [参数...]
 
 ```powershell
 # 读页面文本
-node C:\Users\Administrator\browser-tools\browser-run.mjs https://www.baidu.com --text
+node {BROWSER_TOOLS}\browser-run.mjs https://www.baidu.com --text
 
 # 搜索流程：填表 → 点击 → 等待 → 截图
-node C:\Users\Administrator\browser-tools\browser-run.mjs https://www.baidu.com --fill "input[name=wd]=天气预报" --click "input[type=submit]" --wait 2500 --shot C:\tmp\search.png
+node {BROWSER_TOOLS}\browser-run.mjs https://www.baidu.com --fill "input[name=wd]=天气预报" --click "input[type=submit]" --wait 2500 --shot C:\tmp\search.png
 ```
 
 ## 注意事项
@@ -46,7 +46,7 @@ node C:\Users\Administrator\browser-tools\browser-run.mjs https://www.baidu.com 
 3. **登录态**：Playwright 是无痕环境，需要登录的站点需另行处理 Cookie（暂未封装）
 4. **回归验证**：修改 `browser-run.mjs` 后，先跑本地测试页确认不破坏：
    ```powershell
-   node C:\Users\Administrator\browser-tools\browser-run.mjs "file:///C:/Users/Administrator/browser-tools/test-form.html" --fill "#kw=测试" --click "#btn" --text
+   node {BROWSER_TOOLS}\browser-run.mjs "file:///C:/Users/Administrator/browser-tools/test-form.html" --fill "#kw=测试" --click "#btn" --text
    ```
    预期输出包含「你输入了: 测试」
 5. 本机已有 ComfyUI Python 环境未装 selenium/playwright（python 侧）；Node 侧 playwright 独立于工作区 node_modules，**不影响桥的依赖**

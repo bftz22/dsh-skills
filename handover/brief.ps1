@@ -1,16 +1,16 @@
-﻿# brief.ps1 — 交接简报：让接手 AI 快速了解机器与服务现状
+# brief.ps1 — 交接简报：让接手 AI 快速了解机器与服务现状
 # 用法：powershell -File brief.ps1
-# 输出：控制台简报 + 保存 F:\AI交接指南\简报-<时间>.md
+# 输出：控制台简报 + 保存 {ARCHIVE}\简报-<时间>.md
 # 兼容 PS 5.1 / 7；只读，不改任何文件
 $ErrorActionPreference = 'Continue'
 
 # 自动探测交接指南目录（F 优先 D 兜底；优先新版子文件夹结构，兼容旧版平铺）
 $base = $null
-foreach ($b in @('F:\AI交接指南', 'D:\下载\AI交接指南')) {
+foreach ($b in @('{ARCHIVE}', '{DOWNLOADS}\AI交接指南')) {
   if (Test-Path $b) { $base = $b; break }
 }
 if (-not $base) {
-  Write-Output 'ERR: 未找到交接指南目录（F:\AI交接指南 或 D:\下载\AI交接指南）'
+  Write-Output 'ERR: 未找到交接指南目录（{ARCHIVE} 或 {DOWNLOADS}\AI交接指南）'
   exit 1
 }
 if (Test-Path (Join-Path $base '00_主指南\AI交接指南-2026-08-16.md')) {
@@ -76,7 +76,7 @@ Add-Line ""
 # ---------- 快捷指令（贤臣第 4 层 2026-08-19 主公确立：一句话出报） ----------
 Add-Line "## 2.1 快捷指令（主公一句话出报）"
 Add-Line ""
-$cmdMd = 'F:\朝堂档案\10_内侍省·通传\快捷指令.md'
+$cmdMd = '{COURT_ARCHIVE}\10_内侍省·通传\快捷指令.md'
 if (Test-Path $cmdMd) {
   ([System.IO.File]::ReadAllLines($cmdMd, $utf8) | Select-Object -First 30) | ForEach-Object { Add-Line $_ }
 } else { Add-Line "（未找到快捷指令.md）" }

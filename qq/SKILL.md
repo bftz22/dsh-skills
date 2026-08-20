@@ -2,7 +2,7 @@
 > 开源级别：**open（可开源）**——已/可同步至 dsh-skills 公开仓库
 
 > 用途：给 AI「QQ 出口」——通过本机 NapCat（小号 3773288651「贤臣」在线挂机）向主公 QQ 号发送私聊消息、查询贤臣在线状态与好友列表、**接收主公 QQ 发来的图片**
-> 目录：`C:\Users\Administrator\deepseek-harness\skills\qq\`
+> 目录：`{WORKSPACE}\skills\qq\`
 > 创建：2026-08-17（配合 D:\qq-bridge 部署，Chatbox 渠道 → QQ 渠道）
 > 依赖：NapCat 运行中（端口 3000）、凭据在 `.env`（NAPCAT_API / NAPCAT_TOKEN）
 
@@ -29,11 +29,11 @@ powershell -File qq-info.ps1 -Friends
 ## 收图（2026-08-17 新增，qq-bridge.mjs 内置）
 
 - **机制**：主公（白名单大号）给贤臣小号发图片 → NapCat 上报 → qq-bridge 自动下载保存到
-  `D:\下载\QQ收图\`，文件名 `QQ-<YYYYMMDDHHmmss>-<QQ号>.<ext>`；元信息写 `latest.json`
+  `{DOWNLOADS}\QQ收图\`，文件名 `QQ-<YYYYMMDDHHmmss>-<QQ号>.<ext>`；元信息写 `latest.json`
   （时间/发送者/文件名/路径），每次收图覆盖
 - **带斜杠指令的图片**：先收图，再照常执行指令（如 `/贤臣 看看这张图`）
 - **AI 侧查看流程**（主公在 Chatbox 说「看QQ收的图」时）：
-  1. 读 `D:\下载\QQ收图\latest.json` 拿最新图片路径（没有则列出目录最新 5 张让主公选）
+  1. 读 `{DOWNLOADS}\QQ收图\latest.json` 拿最新图片路径（没有则列出目录最新 5 张让主公选）
   2. 用 `skills\vision\` 技能识别图片内容（OCR / 本地 VLM / 云端 API），按需汇报
 - **排障**：收图失败先看 qq-bridge 窗口日志（`复制图片缓存失败`/`下载图片失败 HTTP xxx`）；
   `get_image` 拿本地缓存失败会自动回退到直连下载 url
@@ -54,7 +54,7 @@ powershell -File qq-info.ps1 -Friends
 | NapCat HTTP API | `http://127.0.0.1:3000`（.env 的 `NAPCAT_API`） |
 | 访问 token | .env 的 `NAPCAT_TOKEN`（与 qq-bridge.bat 一致） |
 | 桥接脚本 | `D:\qq-bridge\qq-bridge.mjs`（8788 收上报，白名单双大号） |
-| 收图目录 | `D:\下载\QQ收图\`（latest.json 记录最新一张） |
+| 收图目录 | `{DOWNLOADS}\QQ收图\`（latest.json 记录最新一张） |
 
 ## 注意事项
 

@@ -1,4 +1,4 @@
-﻿# vision-cloud.ps1 — 眼睛方案C：云端视觉 API（智谱 GLM-4V-Flash，免费额度）
+# vision-cloud.ps1 — 眼睛方案C：云端视觉 API（智谱 GLM-4V-Flash，免费额度）
 # 用法：powershell -File vision-cloud.ps1 -Image "图片路径" -Question "问题"
 # 前置：在 open.bigmodel.cn 注册获取 API Key，写入 .env 的 VISION_API_KEY（或 -ApiKey 参数传入）
 # 注意：图片会上传到智谱云端，敏感图片请用方案 A（本地）
@@ -13,7 +13,7 @@ if (-not (Test-Path $Image)) { Write-Output "ERR: 图片不存在: $Image"; exit
 
 # 取密钥：优先 -ApiKey，其次 .env 的 VISION_API_KEY
 if (-not $ApiKey) {
-  $line = Select-String -Path "C:\Users\Administrator\deepseek-harness\.env" -Pattern '^VISION_API_KEY=' -ErrorAction SilentlyContinue | Select-Object -First 1
+  $line = Select-String -Path "{WORKSPACE}\.env" -Pattern '^VISION_API_KEY=' -ErrorAction SilentlyContinue | Select-Object -First 1
   if ($line) { $ApiKey = $line.Line.Substring($line.Line.IndexOf('=') + 1).Trim().Trim('"') }
 }
 if (-not $ApiKey) {

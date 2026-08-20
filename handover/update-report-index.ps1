@@ -1,4 +1,4 @@
-﻿# ============================================================
+# ============================================================
 # update-report-index.ps1 - 报告索引自动生成 (2026-08-19 P0)
 # 扫描 04_报告 子目录, 生成 INDEX.md (任务/文件/时间/大小)
 # 用法: powershell -File update-report-index.ps1
@@ -6,7 +6,7 @@
 #       生成的 INDEX.md 为 .md, 用 UTF-8 无 BOM 即可
 # ============================================================
 $ErrorActionPreference = 'Stop'
-$reportRoot = 'F:\AI交接指南\04_报告'
+$reportRoot = '{ARCHIVE}\04_报告'
 $indexPath = Join-Path $reportRoot 'INDEX.md'
 
 $files = Get-ChildItem -LiteralPath $reportRoot -Recurse -File -Filter '*.md' |

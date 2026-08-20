@@ -1,4 +1,4 @@
-﻿param(
+param(
   [Parameter(Mandatory = $true)][string]$Prompt,
   [string]$Negative = 'lowres, bad anatomy, bad hands, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, deformed, blurry',
   [string]$Model = 'animagine-xl-3.1.safetensors',
@@ -20,7 +20,7 @@ try { Invoke-RestMethod -Uri 'http://127.0.0.1:8188/system_stats' -TimeoutSec 5 
 catch { Write-Host "[FAIL] ComfyUI 未运行 (127.0.0.1:8188)"; exit 1 }
 
 # 检查模型
-$modelPath = "F:\ComfyUI-aki-v3.2\ComfyUI\models\checkpoints\$Model"
+$modelPath = "{COMFYUI}\models\checkpoints\$Model"
 if (-not (Test-Path $modelPath)) { Write-Host "[FAIL] 模型不存在: $modelPath"; exit 1 }
 
 $wf = @{

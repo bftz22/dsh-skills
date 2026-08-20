@@ -1,4 +1,4 @@
-﻿# qq-send.ps1 - 通过本机 NapCat 给指定 QQ 发私聊消息
+# qq-send.ps1 - 通过本机 NapCat 给指定 QQ 发私聊消息
 # 用法: powershell -File qq-send.ps1 -UserId 3565728847 -Message "内容"
 # 凭据: 读 .env 的 NAPCAT_API / NAPCAT_TOKEN
 
@@ -11,7 +11,7 @@ $ErrorActionPreference = 'Stop'
 
 # 读 .env 凭据
 function Get-EnvVal($key) {
-  $envFile = 'C:\Users\Administrator\deepseek-harness\.env'
+  $envFile = '{WORKSPACE}\.env'
   $m = Select-String -Path $envFile -Pattern "^$key\s*=\s*(.*)$"
   if ($m) { return $m.Matches[0].Groups[1].Value.Trim() }
   return $null

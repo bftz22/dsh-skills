@@ -1,17 +1,17 @@
-﻿# update-guide.ps1 — 生成带时间戳的状态快照文件（P1-② 2026-08-19 主公拍板：主指南不再被自动改写）
+# update-guide.ps1 — 生成带时间戳的状态快照文件（P1-② 2026-08-19 主公拍板：主指南不再被自动改写）
 # 用法：powershell -File update-guide.ps1
-# 兼容 PS 5.1 / 7；只读写交接指南目录（自动探测 F:\AI交接指南 优先，D:\下载\AI交接指南 兜底），无任何危险操作
+# 兼容 PS 5.1 / 7；只读写交接指南目录（自动探测 {ARCHIVE} 优先，{DOWNLOADS}\AI交接指南 兜底），无任何危险操作
 $ErrorActionPreference = 'Continue'
 
 # 自动探测指南目录（F 优先 D 兜底；优先新版子文件夹结构，兼容旧版平铺）
 $base = $null
-foreach ($b in @('F:\AI交接指南', 'D:\下载\AI交接指南')) {
+foreach ($b in @('{ARCHIVE}', '{DOWNLOADS}\AI交接指南')) {
   if (Test-Path $b) { $base = $b; break }
 }
 # 都没有：自动创建目录骨架（HANDOVER_DIR 环境变量优先，其次 F 盘）
 if (-not $base) {
   $base = $env:HANDOVER_DIR
-  if (-not $base) { $base = 'F:\AI交接指南' }
+  if (-not $base) { $base = '{ARCHIVE}' }
   Write-Output "INFO: 未找到交接指南目录，自动创建：$base"
   foreach ($d in @('00_主指南', '01_交接日志', '02_简报', '03_状态快照', '04_报告', '06_贤臣档案')) {
     $p = Join-Path $base $d
@@ -118,8 +118,8 @@ function Read-Tail([string]$path, [int]$n) {
   }
 }
 foreach ($lg in @(
-  @{ N = 'bridge.log'; P = 'C:\Users\Administrator\deepseek-harness\bridge.log' },
-  @{ N = 'comfyui.log'; P = 'F:\ComfyUI-aki-v3.2\ComfyUI\user\comfyui.log' }
+  @{ N = 'bridge.log'; P = '{WORKSPACE}\bridge.log' },
+  @{ N = 'comfyui.log'; P = '{COMFYUI}\user\comfyui.log' }
 )) {
   if (Test-Path $lg.P) {
     $tail = Read-Tail $lg.P 2
@@ -134,7 +134,7 @@ foreach ($lg in @(
 Add-Line ""
 Add-Line "### 工作流 / 模型（最近修改时间）"
 Add-Line ""
-$wfDir = 'F:\ComfyUI-aki-v3.2\ComfyUI\user\default\workflows'
+$wfDir = '{COMFYUI}\user\default\workflows'
 if (Test-Path $wfDir) {
   Get-ChildItem $wfDir -File | Sort-Object LastWriteTime -Descending | Select-Object -First 6 | ForEach-Object {
     Add-Line ("- {0}（{1:MM-dd HH:mm}）" -f $_.Name, $_.LastWriteTime)

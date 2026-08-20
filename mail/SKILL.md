@@ -2,7 +2,7 @@
 > 开源级别：**open（可开源）**——已/可同步至 dsh-skills 公开仓库
 
 > 用途：**IMAP 直连任意邮箱**（QQ/163/新浪/Gmail/Outlook 等），不经网页，秒级查询新邮件/未读/要紧邮件
-> 工具：`C:\Users\Administrator\mail-tools\`（imapflow）
+> 工具：`{MAIL_TOOLS}\`（imapflow）
 > 创建：2026-08-16 · 2026-08-17 通用化（不再限定 QQ 邮箱）
 
 ## 为什么用 IMAP
@@ -36,11 +36,11 @@ IMAP 是标准邮件协议（993 SSL），用**授权码/专用密码**登录，
 ## 用法
 
 ```powershell
-node C:\Users\Administrator\mail-tools\mail-check.mjs            # 最近 15 封（含要紧度标记）
-node C:\Users\Administrator\mail-tools\mail-check.mjs --unseen   # 只看未读（0 封时直接提示）
-node C:\Users\Administrator\mail-tools\mail-check.mjs --limit 5  # 最近 5 封
-node C:\Users\Administrator\mail-tools\mail-check.mjs --json     # JSON 输出
-node C:\Users\Administrator\mail-tools\folder-status.mjs         # 各文件夹数量
+node {MAIL_TOOLS}\mail-check.mjs            # 最近 15 封（含要紧度标记）
+node {MAIL_TOOLS}\mail-check.mjs --unseen   # 只看未读（0 封时直接提示）
+node {MAIL_TOOLS}\mail-check.mjs --limit 5  # 最近 5 封
+node {MAIL_TOOLS}\mail-check.mjs --json     # JSON 输出
+node {MAIL_TOOLS}\folder-status.mjs         # 各文件夹数量
 ```
 
 ## 要紧度规则（mail-check 内置）

@@ -8,7 +8,7 @@ param(
   [int]$TimeoutSec = 1800
 )
 
-$IDM = "D:\idm\Internet Download Manager\IDMan.exe"
+$IDM = "{IDM_DIR}\IDMan.exe"
 $ErrorActionPreference = "Stop"
 $DefaultDir = "D:\download"
 

@@ -1,4 +1,4 @@
-﻿param(
+param(
   [Parameter(Mandatory = $true)][string]$PromptFile,
   [string]$Model = 'animagine-xl-3.1.safetensors',
   [int]$Width = 832,
@@ -45,7 +45,7 @@ if ($DryRun) { Write-Host "[DryRun] 解析验证通过, 不提交"; exit 0 }
 # ---------- 检查 ComfyUI / 模型 ----------
 try { Invoke-RestMethod -Uri 'http://127.0.0.1:8188/system_stats' -TimeoutSec 5 | Out-Null }
 catch { Write-Host "[FAIL] ComfyUI 未运行"; exit 1 }
-$modelPath = "F:\ComfyUI-aki-v3.2\ComfyUI\models\checkpoints\$Model"
+$modelPath = "{COMFYUI}\models\checkpoints\$Model"
 if (-not (Test-Path $modelPath)) { Write-Host "[FAIL] 模型不存在: $modelPath"; exit 1 }
 
 # ---------- 批量提交 ----------
@@ -99,7 +99,7 @@ while ($results.Count -lt $ids.Count -and (Get-Date) -lt $deadline) {
 }
 
 # ---------- 生成报告 ----------
-$reportDir = "F:\AI交接指南\04_报告\ComfyUI生成报告"
+$reportDir = "{ARCHIVE}\04_报告\ComfyUI生成报告"
 if (-not (Test-Path $reportDir)) { New-Item -ItemType Directory -Path $reportDir -Force | Out-Null }
 $report = Join-Path $reportDir ("ComfyUI生成报告-" + (Get-Date -Format 'yyyyMMdd-HHmm') + ".md")
 $sb = New-Object System.Text.StringBuilder
@@ -117,7 +117,7 @@ foreach ($j in $ids) {
   [void]$sb.AppendLine(('| {0} | {1} | {2} | `{3}` |' -f ($j.idx+1), $j.name, $st, $f))
 }
 [void]$sb.AppendLine('')
-[void]$sb.AppendLine('图片目录：`F:\ComfyUI-aki-v3.2\ComfyUI\output\`')
+[void]$sb.AppendLine('图片目录：`{COMFYUI}\output\`')
 [IO.File]::WriteAllText($report, $sb.ToString(), (New-Object System.Text.UTF8Encoding($true)))
 Write-Host "报告: $report"
 Write-Host "完成 $($results.Count)/$($ids.Count)"

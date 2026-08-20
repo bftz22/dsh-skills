@@ -1,4 +1,4 @@
-﻿# vision-face.ps1 — 眼睛方案B：人脸检测（本地 YOLOv8m ONNX）
+# vision-face.ps1 — 眼睛方案B：人脸检测（本地 YOLOv8m ONNX）
 # 用法：powershell -File vision-face.ps1 -Image "图片路径"
 # 输出：检测到的人脸数量、位置（xyxy 像素坐标）、置信度
 param([Parameter(Mandatory = $true)][string]$Image)
@@ -13,7 +13,7 @@ img = cv2.imread(img_path)  # BGR
 if img is None:
     print('ERR: 无法读取图片'); sys.exit(1)
 h, w = img.shape[:2]
-sess = onnxruntime.InferenceSession(r'F:\ComfyUI-aki-v3.2\ComfyUI\models\onnx\bbox\face_yolov8m.onnx', providers=['CPUExecutionProvider'])
+sess = onnxruntime.InferenceSession(r'{COMFYUI}\models\onnx\bbox\face_yolov8m.onnx', providers=['CPUExecutionProvider'])
 in_h, in_w = 640, 640
 r = min(in_h / h, in_w / w)
 new_w, new_h = max(1, int(round(w * r))), max(1, int(round(h * r)))
@@ -62,6 +62,6 @@ $tmpPy = Join-Path $env:TEMP ("vision-face-" + [guid]::NewGuid().ToString('N') +
 [System.IO.File]::WriteAllText($tmpPy, $py, (New-Object System.Text.UTF8Encoding($false)))
 # 强制 Python 以 UTF-8 输出（防止 cp1252/GBK 区域下 print 中文报 UnicodeEncodeError）
 $env:PYTHONIOENCODING = 'utf-8'
-& "F:\ComfyUI-aki-v3.2\python\python.exe" $tmpPy (Resolve-Path $Image).Path
+& "{COMFYUI_PYTHON}\python.exe" $tmpPy (Resolve-Path $Image).Path
 Remove-Item Env:PYTHONIOENCODING -ErrorAction SilentlyContinue
 if (Test-Path $tmpPy) { Remove-Item $tmpPy -Force }

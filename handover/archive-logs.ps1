@@ -1,5 +1,5 @@
-﻿# archive-logs.ps1 - 交接日志按月归档（朝政体系 P1-① 2026-08-19 主公拍板）
-# 用法：powershell -File archive-logs.ps1 [-Base "F:\AI交接指南"]（Base 缺省自动探测）
+# archive-logs.ps1 - 交接日志按月归档（朝政体系 P1-① 2026-08-19 主公拍板）
+# 用法：powershell -File archive-logs.ps1 [-Base "{ARCHIVE}"]（Base 缺省自动探测）
 # 作用：把 交接日志.md / 交接日志.jsonl 中"早于当月"的历史条目按月移入
 #       99_归档\交接日志归档\YYYY-MM\，主文件只保留当月条目保持轻量；归档文件只增不改。
 # 兼容 PS 5.1 / 7；只读写交接指南目录，无任何危险操作
@@ -12,11 +12,11 @@ $utf8 = New-Object System.Text.UTF8Encoding($false)
 
 # ---- 路径解析：-Base 优先，否则 F 优先 D 兜底；优先新版子文件夹结构 ----
 if (-not $Base) {
-  foreach ($b in @('F:\AI交接指南', 'D:\下载\AI交接指南')) {
+  foreach ($b in @('{ARCHIVE}', '{DOWNLOADS}\AI交接指南')) {
     if (Test-Path $b) { $Base = $b; break }
   }
 }
-if (-not $Base) { Write-Output 'ERR: 未找到交接指南目录（F:\AI交接指南 或 D:\下载\AI交接指南）'; exit 1 }
+if (-not $Base) { Write-Output 'ERR: 未找到交接指南目录（{ARCHIVE} 或 {DOWNLOADS}\AI交接指南）'; exit 1 }
 if (Test-Path (Join-Path $Base '01_交接日志')) {
   $logDir = Join-Path $Base '01_交接日志'
 } else {

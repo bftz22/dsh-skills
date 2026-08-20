@@ -2,7 +2,7 @@
 > 开源级别：**open（可开源）**——已/可同步至 dsh-skills 公开仓库
 
 > 用途：通过本地 ComfyUI（http://127.0.0.1:8188）单张/批量生成 AI 图片
-> 目录：`C:\Users\Administrator\deepseek-harness\skills\comfyui\`
+> 目录：`{WORKSPACE}\skills\comfyui\`
 > 创建：2026-08-16（基于实际调试经验整理）
 
 ## 适用场景
@@ -14,8 +14,8 @@
 ## 前置条件
 
 1. **ComfyUI 已运行**：`http://127.0.0.1:8188` 返回 200
-   - 未运行时：让用户双击 `F:\ComfyUI-aki-v3.2\绘世启动器.exe` 启动
-2. **模型就位**：`F:\ComfyUI-aki-v3.2\ComfyUI\models\checkpoints\`
+   - 未运行时：让用户双击 `{COMFYUI_LAUNCHER}` 启动
+2. **模型就位**：`{COMFYUI}\models\checkpoints\`
    - `animagine-xl-3.1.safetensors`（二次元）
    - `Juggernaut-XL_v9_RunDiffusionPhoto_v2.safetensors`（写实）
    - `DreamShaper_8_pruned.safetensors`（SD1.5 通用，用 512×512）
@@ -62,7 +62,7 @@ lowres, bad anatomy, ...
 
 - 名称行：`【编号】名称`，编号用于输出前缀（role_01, role_02...）
 - `Prompt:` 与 `Negative Prompt:` 后各跟一行文本
-- 批量完成后自动生成报告：`F:\AI交接指南\04_报告\ComfyUI生成报告\ComfyUI生成报告-<时间>.md`（含中文名↔文件对照，2026-08-19 起按主公安排不再生成到桌面）
+- 批量完成后自动生成报告：`{ARCHIVE}\04_报告\ComfyUI生成报告\ComfyUI生成报告-<时间>.md`（含中文名↔文件对照，2026-08-19 起按主公安排不再生成到桌面）
 
 ## 推荐参数
 
@@ -105,5 +105,5 @@ lowres, bad anatomy, ...
 
 ## 输出位置
 
-- 图片：`F:\ComfyUI-aki-v3.2\ComfyUI\output\`
+- 图片：`{COMFYUI}\output\`
 - ComfyUI 网页（http://127.0.0.1:8188）右侧历史也能看

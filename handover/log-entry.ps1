@@ -1,4 +1,4 @@
-﻿# log-entry.ps1 — 向交接日志追加一条结构化记录（Markdown + JSONL 双写）
+# log-entry.ps1 — 向交接日志追加一条结构化记录（Markdown + JSONL 双写）
 # 用法：powershell -File log-entry.ps1 -Task "一句话任务" [-Detail "详情" -Files "文件1, 文件2" -Issues "问题" -Pending "待办"]
 # 兼容 PS 5.1 / 7；只追加，不删除任何内容；写入前自动按月归档历史日志（archive-logs.ps1，P1-① 2026-08-19）
 param(
@@ -13,10 +13,10 @@ $ErrorActionPreference = 'Continue'
 
 # ---- 路径解析：F 优先 D 兜底；优先新版子文件夹结构，兼容旧版平铺 ----
 $base = $null
-foreach ($b in @('F:\AI交接指南', 'D:\下载\AI交接指南')) {
+foreach ($b in @('{ARCHIVE}', '{DOWNLOADS}\AI交接指南')) {
   if (Test-Path $b) { $base = $b; break }
 }
-if (-not $base) { $base = 'D:\下载\AI交接指南' }
+if (-not $base) { $base = '{DOWNLOADS}\AI交接指南' }
 if (Test-Path (Join-Path $base '01_交接日志')) {
   $logDir = Join-Path $base '01_交接日志'
 } else {

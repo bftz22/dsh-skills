@@ -2,7 +2,7 @@
 > 开源级别：**open（可开源）**——已/可同步至 dsh-skills 公开仓库
 
 > 用途：给 AI「外接眼睛」——按需调用本机/云端视觉能力识别图片内容
-> 目录：`C:\Users\Administrator\deepseek-harness\skills\vision\`
+> 目录：`{WORKSPACE}\skills\vision\`
 > 创建：2026-08-16（三方案齐全：B 轻量 / A 本地大模型 / C 云端 API）
 
 ## 三只眼睛怎么选
@@ -36,7 +36,7 @@ powershell -File vision-cloud.ps1 -Image "D:\图片\照片.jpg" -Question "图�
 |---|---|
 | venv（方案 A 专用，隔离于 ComfyUI） | `F:\vision-env`（python 3.13 + transformers 4.57 + torch 2.13 cu130） |
 | 本地视觉模型 | `F:\vision-models\Qwen2.5-VL-3B-Instruct`（~7GB，bf16） |
-| 人脸检测模型 | `F:\ComfyUI-aki-v3.2\ComfyUI\models\onnx\bbox\face_yolov8m.onnx` |
+| 人脸检测模型 | `{COMFYUI}\models\onnx\bbox\face_yolov8m.onnx` |
 | OCR | Windows 自带（Win10 22H2 含中文语言包） |
 | 云端 Key | `.env` 的 `VISION_API_KEY`（智谱 GLM-4V-Flash，免费） |
 

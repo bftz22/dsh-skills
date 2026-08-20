@@ -8,7 +8,7 @@ param(
   [int]$TimeoutSec = 900
 )
 
-$IDM = "D:\idm\Internet Download Manager\IDMan.exe"
+$IDM = "{IDM_DIR}\IDMan.exe"
 $ErrorActionPreference = "Stop"
 
 function Get-Sha1($path) {
