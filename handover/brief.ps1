@@ -56,10 +56,10 @@ Add-Line ""
 (Get-Section '## 0. 本机速查表*') | ForEach-Object { Add-Line $_ }
 Add-Line ""
 
-# ---------- 廷议·待主公拍板（2026-08-19 主公确立：开场必报） ----------
-Add-Line "## 2. 廷议·待主公拍板（任务清单.md）"
+# ---------- 廷议·待宿主拍板（2026-08-19 宿主确立：开场必报） ----------
+Add-Line "## 2. 廷议·待宿主拍板（任务清单.md）"
 Add-Line ""
-$taskMd = Join-Path $base '06_贤臣档案\任务清单.md'
+$taskMd = Join-Path $base '06_政务大臣档案\任务清单.md'
 if (Test-Path $taskMd) {
   $tl = [System.IO.File]::ReadAllLines($taskMd, $utf8)
   $inYan = $false
@@ -73,8 +73,8 @@ if (Test-Path $taskMd) {
 } else { Add-Line "（未找到任务清单.md）" }
 Add-Line ""
 
-# ---------- 快捷指令（贤臣第 4 层 2026-08-19 主公确立：一句话出报） ----------
-Add-Line "## 2.1 快捷指令（主公一句话出报）"
+# ---------- 快捷指令（政务大臣第 4 层 2026-08-19 宿主确立：一句话出报） ----------
+Add-Line "## 2.1 快捷指令（宿主一句话出报）"
 Add-Line ""
 $cmdMd = '{COURT_ARCHIVE}\10_内侍省·通传\快捷指令.md'
 if (Test-Path $cmdMd) {
@@ -125,9 +125,9 @@ function Test-Http([string]$u) {
   try { $null = Invoke-WebRequest -Uri $u -TimeoutSec 3 -UseBasicParsing; return 'OK' }
   catch { return 'DOWN' }
 }
-$bridge = Test-Http 'http://127.0.0.1:8787/v1/models'
+$bridge = Test-Http 'http://127.0.0.1:<PORT_MAIN>/v1/models'
 $comfy  = Test-Http 'http://127.0.0.1:8188/system_stats'
-Add-Line "- dsh-openai-bridge (8787)：$bridge"
+Add-Line "- dsh-openai-bridge (<PORT_MAIN>)：$bridge"
 Add-Line "- ComfyUI (8188)：$comfy"
 try {
   $q = Invoke-RestMethod -Uri 'http://127.0.0.1:8188/queue' -TimeoutSec 3

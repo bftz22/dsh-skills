@@ -1,4 +1,4 @@
-# search.ps1 - 跨库搜索：一键搜遍交接指南 + 朝堂档案（朝政体系 P1-③ 2026-08-19 主公拍板）
+# search.ps1 - 跨库搜索：一键搜遍交接指南 + 朝堂档案（朝政体系 P1-③ 2026-08-19 宿主拍板）
 # 用法：powershell -File search.ps1 -Keyword "关键词"
 #       可选：-Dir "04_报告"（限定路径含该子串） -Since "2026-08-01" -Until "2026-08-31"（按文件修改时间）
 #             -Max 30（每文件最多显示匹配行数，默认 30） -ListOnly（只列命中文件） -CaseSensitive（区分大小写）
@@ -17,7 +17,7 @@ $ErrorActionPreference = 'Continue'
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $gbk = [System.Text.Encoding]::GetEncoding(936)
 
-# ---- 搜索范围：交接指南（日志/报告/贤臣档案/归档）+ 朝堂档案全部门 ----
+# ---- 搜索范围：交接指南（日志/报告/政务大臣档案/归档）+ 朝堂档案全部门 ----
 $roots = @('{ARCHIVE}', '{COURT_ARCHIVE}')
 $exts  = @('.md', '.jsonl', '.txt', '.log', '.ps1', '.cmd', '.bat', '.mjs', '.js', '.json', '.csv', '.ini', '.yml', '.yaml')
 

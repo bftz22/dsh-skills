@@ -1,4 +1,4 @@
-# archive-logs.ps1 - 交接日志按月归档（朝政体系 P1-① 2026-08-19 主公拍板）
+# archive-logs.ps1 - 交接日志按月归档（朝政体系 P1-① 2026-08-19 宿主拍板）
 # 用法：powershell -File archive-logs.ps1 [-Base "{ARCHIVE}"]（Base 缺省自动探测）
 # 作用：把 交接日志.md / 交接日志.jsonl 中"早于当月"的历史条目按月移入
 #       99_归档\交接日志归档\YYYY-MM\，主文件只保留当月条目保持轻量；归档文件只增不改。

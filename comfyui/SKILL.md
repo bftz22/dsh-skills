@@ -62,7 +62,7 @@ lowres, bad anatomy, ...
 
 - 名称行：`【编号】名称`，编号用于输出前缀（role_01, role_02...）
 - `Prompt:` 与 `Negative Prompt:` 后各跟一行文本
-- 批量完成后自动生成报告：`{ARCHIVE}\04_报告\ComfyUI生成报告\ComfyUI生成报告-<时间>.md`（含中文名↔文件对照，2026-08-19 起按主公安排不再生成到桌面）
+- 批量完成后自动生成报告：`{ARCHIVE}\04_报告\ComfyUI生成报告\ComfyUI生成报告-<时间>.md`（含中文名↔文件对照，2026-08-19 起按宿主安排不再生成到桌面）
 
 ## 推荐参数
 
@@ -96,10 +96,10 @@ lowres, bad anatomy, ...
 生成完成后，回复里用 markdown 图片链接展示，**不要**把图片 base64/二进制塞进回复：
 
 ```
-![生成结果](http://127.0.0.1:8787/output/<文件名>)
+![生成结果](http://127.0.0.1:<PORT_MAIN>/output/<文件名>)
 ```
 
-- bridge 已把输出目录挂到 `http://127.0.0.1:8787/output/`：`GET /output` 返回最新文件清单（JSON），`GET /output/<文件名>` 返回图片。
+- bridge 已把输出目录挂到 `http://127.0.0.1:<PORT_MAIN>/output/`：`GET /output` 返回最新文件清单（JSON），`GET /output/<文件名>` 返回图片。
 - 先把文件名告诉用户（如 `comfy_out_00001_.png`），再给链接；Chatbox 等客户端可直接内联渲染。
 - 若拿到的是 MCP `get_image` 的 base64 数据：**丢弃 data 字段**，只用其保存路径/文件名拼 URL，防止上下文被撑爆。
 

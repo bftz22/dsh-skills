@@ -30,11 +30,11 @@ $now = Get-Date
 $session = if ($env:DSH_SESSION_ID) { $env:DSH_SESSION_ID } else { 'unknown' }
 $ts = $now.ToString('yyyy-MM-dd HH:mm:ss')
 
-# ---------- 按月归档（P1-① 2026-08-19 主公拍板）：早于当月的日志移入 99_归档\交接日志归档 ----------
+# ---------- 按月归档（P1-① 2026-08-19 宿主拍板）：早于当月的日志移入 99_归档\交接日志归档 ----------
 $me = Split-Path -Parent $MyInvocation.MyCommand.Path
 & (Join-Path $me 'archive-logs.ps1') | Out-Null
 
-# ---------- 详情长度强制（P0 2026-08-19 主公拍板）：超 200 字拒绝写入 ----------
+# ---------- 详情长度强制（P0 2026-08-19 宿主拍板）：超 200 字拒绝写入 ----------
 if ($Detail.Length -gt 200) {
   Write-Error ("详情 {0} 字符，超过 200 字上限，已拒绝写入。请精简为：做了什么+结果+关键证据；详细过程放 04_报告。" -f $Detail.Length)
   exit 1

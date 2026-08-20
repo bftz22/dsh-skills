@@ -1,4 +1,4 @@
-# qq-info.ps1 - 查询贤臣(NapCat)在线状态 / 好友列表
+# qq-info.ps1 - 查询政务大臣(NapCat)在线状态 / 好友列表
 # 用法: powershell -File qq-info.ps1 [-Friends]
 # 凭据: 读 .env 的 NAPCAT_API / NAPCAT_TOKEN
 
@@ -27,7 +27,7 @@ try {
   $login = Invoke-RestMethod -Uri "$api/get_login_info" -Headers $headers -TimeoutSec 10
   if ($login.status -eq 'ok') {
     $d = $login.data
-    Write-Output "贤臣在线: QQ=$($d.user_id) 昵称=$($d.nickname)"
+    Write-Output "政务大臣在线: QQ=$($d.user_id) 昵称=$($d.nickname)"
   } else {
     Write-Output "NapCat 状态异常: $($login.message)"
     exit 1

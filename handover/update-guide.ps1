@@ -1,4 +1,4 @@
-# update-guide.ps1 — 生成带时间戳的状态快照文件（P1-② 2026-08-19 主公拍板：主指南不再被自动改写）
+# update-guide.ps1 — 生成带时间戳的状态快照文件（P1-② 2026-08-19 宿主拍板：主指南不再被自动改写）
 # 用法：powershell -File update-guide.ps1
 # 兼容 PS 5.1 / 7；只读写交接指南目录（自动探测 {ARCHIVE} 优先，{DOWNLOADS}\AI交接指南 兜底），无任何危险操作
 $ErrorActionPreference = 'Continue'
@@ -13,12 +13,12 @@ if (-not $base) {
   $base = $env:HANDOVER_DIR
   if (-not $base) { $base = '{ARCHIVE}' }
   Write-Output "INFO: 未找到交接指南目录，自动创建：$base"
-  foreach ($d in @('00_主指南', '01_交接日志', '02_简报', '03_状态快照', '04_报告', '06_贤臣档案')) {
+  foreach ($d in @('00_主指南', '01_交接日志', '02_简报', '03_状态快照', '04_报告', '06_政务大臣档案')) {
     $p = Join-Path $base $d
     if (-not (Test-Path $p)) { New-Item -ItemType Directory -Path $p -Force | Out-Null }
   }
 }
-# 主指南不再被本脚本改写（P1-② 2026-08-19 主公拍板）：仅确保文件存在，缺失时创建最小占位
+# 主指南不再被本脚本改写（P1-② 2026-08-19 宿主拍板）：仅确保文件存在，缺失时创建最小占位
 $guide = Join-Path $base '00_主指南\AI交接指南-2026-08-16.md'
 if (-not (Test-Path $guide) -and -not (Test-Path (Join-Path $base 'AI交接指南-2026-08-16.md'))) {
   $placeholder = @"
@@ -72,7 +72,7 @@ function Test-Http([string]$u) {
   try { $r = Invoke-WebRequest -Uri $u -TimeoutSec 3 -UseBasicParsing; return "OK ($($r.StatusCode))" }
   catch { return "DOWN" }
 }
-$bridge = Test-Http 'http://127.0.0.1:8787/v1/models'
+$bridge = Test-Http 'http://127.0.0.1:<PORT_MAIN>/v1/models'
 $comfyRaw = Test-Http 'http://127.0.0.1:8188/system_stats'
 # 按需启动模式（2026-08-16 用户定）：ComfyUI 平时不常驻，DOWN 属正常
 $comfy  = if ($comfyRaw -eq 'DOWN') { 'DOWN（按需启动，正常）' } else { $comfyRaw }
@@ -87,7 +87,7 @@ $pWatch  = ($procs | Where-Object { $_.CommandLine -match 'watchdog' } | Select-
 
 Add-Line ("| 服务 | 状态 | PID |")
 Add-Line ("|---|---|---|")
-Add-Line ("| dsh-openai-bridge (8787) | $bridge | $pBridge |")
+Add-Line ("| dsh-openai-bridge (<PORT_MAIN>) | $bridge | $pBridge |")
 Add-Line ("| ComfyUI (8188) | $comfy | $pComfy |")
 Add-Line ("| guard 安全闸门 | $([int]($null -ne $pGuard)) | $pGuard |")
 Add-Line ("| watchdog 看门狗 | $([int]($null -ne $pWatch)) | $pWatch |")

@@ -50,7 +50,7 @@ if ($Wait) {
         if ($st -eq 'success') {
           foreach ($o in $h.$id.outputs.PSObject.Properties) { foreach ($img in $o.Value.images) {
             Write-Host "OK $($img.filename)"
-            $bp = if ($env:DSH_BRIDGE_PORT) { $env:DSH_BRIDGE_PORT } else { '8787' }
+            $bp = if ($env:DSH_BRIDGE_PORT) { $env:DSH_BRIDGE_PORT } else { '<PORT_MAIN>' }
             Write-Host "URL http://127.0.0.1:$bp/output/$($img.filename)"
           } }
           exit 0
